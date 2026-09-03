@@ -1,8 +1,8 @@
 namespace app_vetcare_system
 {
-    public partial class Form1 : Form
+    public partial class MainiContainerForm : Form
     {
-        public Form1()
+        public MainiContainerForm()
         {
             InitializeComponent();
         }
