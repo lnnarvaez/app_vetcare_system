@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <Folder Include="Models\DTOs\" />
+    <Folder Include="View\FormUI\" />
   </ItemGroup>
 
 </Project>
