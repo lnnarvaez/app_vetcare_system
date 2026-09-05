@@ -1,0 +1,146 @@
+﻿{
+   "CodeGenerationMode": 4,
+   "ContextClassName": "DevVetCareDBSIContext",
+   "ContextNamespace": null,
+   "FilterSchemas": false,
+   "IncludeConnectionString": true,
+   "IrregularWords": null,
+   "MinimumProductVersion": "2.6.1706",
+   "ModelNamespace": null,
+   "OutputContextPath": "Data",
+   "OutputPath": "Models\\Entities",
+   "PluralRules": null,
+   "PreserveCasingWithRegex": true,
+   "ProjectRootNamespace": "app_vetcare_si",
+   "Schemas": null,
+   "SelectedHandlebarsLanguage": 2,
+   "SelectedToBeGenerated": 0,
+   "SingularRules": null,
+   "T4TemplatePath": null,
+   "Tables": [
+      {
+         "Name": "[dbo].[CargosPacientes]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Citas]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Clientes]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Empleados]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Especies]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[EstadosCitas]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[EstadosGuarderias]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[EstanciasGuarderia]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Pacientes]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Permisos]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[PermisosRoles]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[PertenenciasGuarderia]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Productos]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Razas]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[RegistrosAuditoria]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Roles]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[RolesUsuarios]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Servicios]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[TiposCitas]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[TiposVisitas]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Usuarios]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[VacunacionesPacientes]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Vacunas]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Visitas]",
+         "ObjectType": 0
+      }
+   ],
+   "UiHint": null,
+   "UncountableWords": null,
+   "UseAsyncStoredProcedureCalls": true,
+   "UseBoolPropertiesWithoutDefaultSql": false,
+   "UseDatabaseNames": false,
+   "UseDatabaseNamesForRoutines": true,
+   "UseDateOnlyTimeOnly": true,
+   "UseDbContextSplitting": false,
+   "UseDecimalDataAnnotationForSprocResult": true,
+   "UseFluentApiOnly": true,
+   "UseHandleBars": false,
+   "UseHierarchyId": false,
+   "UseInflector": true,
+   "UseInternalAccessModifiersForSprocsAndFunctions": false,
+   "UseLegacyPluralizer": false,
+   "UseManyToManyEntity": false,
+   "UseNoDefaultConstructor": false,
+   "UseNoNavigations": false,
+   "UseNoObjectFilter": false,
+   "UseNodaTime": false,
+   "UseNullableReferences": false,
+   "UsePrefixNavigationNaming": false,
+   "UseSchemaFolders": false,
+   "UseSchemaNamespaces": false,
+   "UseSpatial": false,
+   "UseT4": false,
+   "UseT4Split": false,
+   "UseTypedTvpParameters": true
+}
