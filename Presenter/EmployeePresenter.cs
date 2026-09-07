@@ -24,7 +24,7 @@ namespace app_vetcare_system.Presenter
             string code = _view.Code.Trim();
             string fullname = _view.FullName.Trim();
             string email = _view.Email.Trim();
-            string phone = string.IsNullOrWhiteSpace(_view.Phone) ? null :
+            string? phone = string.IsNullOrWhiteSpace(_view.Phone) ? null :
                 _view.Phone.Trim(); 
             
             //2. Validación de reglas de negocio
