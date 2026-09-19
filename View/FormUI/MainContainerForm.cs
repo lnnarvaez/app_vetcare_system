@@ -2,6 +2,7 @@ using app_vetcare_si.Data;
 using app_vetcare_system.Services;
 using app_vetcare_system.Services.Interfaz_service;
 using app_vetcare_system.View;
+using app_vetcare_system.View.FormUI;
 
 namespace app_vetcare_system
 {
@@ -17,41 +18,95 @@ namespace app_vetcare_system
 
         private void btnClose_Click(object sender, EventArgs e)
         {
-            this.Dispose();
+            _context.Dispose();
+
+            Dispose();
         }
 
         /// <summary>
         /// Cargar un formulario hijo en el panel derecho del contenedor principal
         /// </summary>
         /// <param name="ChildForm">El formulario hijo a cargar</param>
-        private void LoadFormIntoPanel(Form ChildForm)
+        private void LoadFormIntoPanel(Form childForm)
         {
-            if (splitMain.Panel2.Controls.Count > 0)
+            if (childForm is null)
             {
-                splitMain.Panel2.Controls[0].Dispose();
-                var currentForm = splitMain.Panel2.Controls[0] as Form;
-
-                currentForm?.Close();
+                throw new ArgumentNullException(nameof(childForm));
             }
-            splitMain.Panel2.Controls.Clear();
 
-            ChildForm.TopLevel = false;
-            ChildForm.FormBorderStyle = FormBorderStyle.None;
-            ChildForm.Dock = DockStyle.Fill;
+            // Obtener primero el formulario actualmente cargado.
+            Form? currentForm =
+                splitMain.Panel2.Controls
+                    .OfType<Form>()
+                    .FirstOrDefault();
 
-            splitMain.Panel2.Controls.Add(ChildForm);
-            splitMain.Panel2.Tag = ChildForm;
-            ChildForm.Show();
+            if (currentForm is not null)
+            {
+                // Quitar el formulario del panel.
+                splitMain.Panel2.Controls.Remove(currentForm);
+
+                // Liberar los recursos del formulario anterior.
+                currentForm.Dispose();
+            }
+
+            // Configurar el formulario nuevo como control hijo.
+            childForm.TopLevel = false;
+            childForm.FormBorderStyle =
+                FormBorderStyle.None;
+
+            childForm.Dock = DockStyle.Fill;
+
+            splitMain.Panel2.Controls.Add(childForm);
+
+            splitMain.Panel2.Tag = childForm;
+
+            childForm.Show();
         }
 
         private void BtnClientes_Click(object sender, EventArgs e)
         {
-            ICustomerRepository repository = new CustomerRepository(_context);
+            try
+            {
+                ICustomerRepository repository =
+                    new CustomerRepository(_context);
 
-            var customerForm = new ListCustomerForm(repository);
+                var customerListForm =
+                    new ListCustomerForm(repository);
 
-            //Cargar el formulario de clientes en el panel derecho
-            LoadFormIntoPanel(customerForm);
+                // Escuchar la solicitud de crear un nuevo cliente.
+                customerListForm.NewCustomerRequested +=
+                    CustomerListForm_NewCustomerRequested;
+
+                LoadFormIntoPanel(customerListForm);
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("No fue posible abrir el módulo de clientes.", "Error", 
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+
         }
+
+        /// <summary>
+        /// Atiende la solicitud realizada desde ListCustomerForm para registrar un nuevo cliente.
+        /// </summary>
+
+        private void CustomerListForm_NewCustomerRequested(object? sender, EventArgs e)
+        {
+            try
+            {
+                ICustomerRepository repository = new CustomerRepository(_context);
+                var customerForm = new CustomerForm(repository);
+                LoadFormIntoPanel(customerForm);
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("No fue posible abrir el formulario de cliente.", "Error", 
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+        }
+
     } //End class   
 } //End namespace

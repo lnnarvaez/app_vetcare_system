@@ -71,12 +71,12 @@
             // 
             // btnHome
             // 
+            btnHome.Cursor = Cursors.Hand;
             btnHome.FlatAppearance.BorderSize = 0;
             btnHome.FlatStyle = FlatStyle.Flat;
             btnHome.IconChar = FontAwesome.Sharp.IconChar.House;
             btnHome.IconColor = Color.FromArgb(13, 105, 94);
             btnHome.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            btnHome.IconSize = 32;
             btnHome.Location = new Point(41, 9);
             btnHome.Margin = new Padding(32, 3, 3, 3);
             btnHome.Name = "btnHome";
@@ -214,6 +214,7 @@
             btnCustomerNew.TextAlign = ContentAlignment.MiddleLeft;
             btnCustomerNew.TextImageRelation = TextImageRelation.ImageBeforeText;
             btnCustomerNew.UseVisualStyleBackColor = false;
+            btnCustomerNew.Click += btnCustomerNew_Click;
             // 
             // ListCustomerForm
             // 

@@ -5,36 +5,64 @@ using app_vetcare_system.View.Interfaz;
 
 namespace app_vetcare_system.View
 {
-    public partial class ListCustomerForm : Form, ICustomerView
+    public partial class ListCustomerForm : Form, ICustomerListView
     {
         #region Variables Readonly
-        private readonly CustomerPresenter _presenter;
+        private readonly CustomerListPresenter _presenter;
         private readonly BindingSource _bindingSource = new();
         #endregion
 
         #region Constructors
-        public ListCustomerForm(
-       ICustomerRepository repository)
+        public ListCustomerForm (ICustomerRepository repository)
         {
             InitializeComponent();
 
             ConfigureDataGridView();
 
-            _presenter = new CustomerPresenter(
-                this,
-                repository);
+            _presenter = new CustomerListPresenter(this, repository);
         }
+        
         #endregion Constructors
+
+        #region Eventos
+
+        /// <summary>
+        /// Evento que informa al contenedor principal que el usuario desea registrar un nuevo cliente.
+        /// </summary>
+        public event EventHandler? NewCustomerRequested;
+
+        #endregion
+
+        /// <summary>
+        /// Solicita al contenedor principal abrir el formulario de creación de clientes.
+        /// </summary>
+        
+        #region Eventos del formulario
 
         private void ListCustomerForm_Load(object sender, EventArgs e)
         {
             _presenter.LoadCustomers();
         }
 
+        /// <summary>
+        /// Regresa al menú anterior.
+        /// </summary>
         private void btnHome_Click(object sender, EventArgs e)
         {
             this.Dispose();
         }
+
+        /// <summary>
+        /// Solicita al contenedor principal abrir el formulario de creación de clientes.
+        /// </summary>
+        private void btnCustomerNew_Click(object sender, EventArgs e)
+        {
+            NewCustomerRequested?.Invoke(this, EventArgs.Empty);
+        }
+
+        #endregion
+
+        #region DataGridView
 
         private void ConfigureDataGridView()
         {
@@ -90,6 +118,10 @@ namespace app_vetcare_system.View
 
             dgvCustomerList.DataSource = _bindingSource;
         }
+
+        #endregion
+
+        #region Implementación ICustomerListView
         public void ShowCustomers (IEnumerable<CustomersDto> customers)
         {
             _bindingSource.DataSource = customers.ToList();
@@ -105,6 +137,7 @@ namespace app_vetcare_system.View
         {
             MessageBox.Show(mensaje, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
-        
+        #endregion
+
     } //End class
 } //end namespace
