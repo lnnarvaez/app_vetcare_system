@@ -10,6 +10,7 @@
         public string EmergencyPhone { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
+        public string PreferredPaymentMethod { get; set; } = string.Empty;
 
         //Definir una propiedad calculada para obtener el nombre completo del cliente
         public string FullName => $"{FirstName} {LastName}";

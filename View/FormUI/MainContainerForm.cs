@@ -77,6 +77,10 @@ namespace app_vetcare_system
                 customerListForm.NewCustomerRequested +=
                     CustomerListForm_NewCustomerRequested;
 
+                // Escucha la solicitud de edición de un cliente.
+                customerListForm.EditCustomerRequested +=
+                    CustomerListForm_EditCustomerRequested;
+
                 LoadFormIntoPanel(customerListForm);
             }
             catch (Exception)
@@ -103,6 +107,38 @@ namespace app_vetcare_system
             catch (Exception)
             {
                 MessageBox.Show("No fue posible abrir el formulario de cliente.", "Error", 
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+        }
+
+        private void CustomerListForm_EditCustomerRequested(
+    int customerId)
+        {
+            try
+            {
+                if (customerId <= 0)
+                {
+                    throw new ArgumentOutOfRangeException(
+                        nameof(customerId));
+                }
+
+                ICustomerRepository repository =
+                    new CustomerRepository(_context);
+
+                // Se abre CustomerEditForm, no CustomerForm.
+                var customerEditForm =
+                    new CustomerEditForm(
+                        repository,
+                        customerId);
+
+                LoadFormIntoPanel(customerEditForm);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"No fue posible abrir el formulario de edición: {ex.Message}",
+                    "Error",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
             }

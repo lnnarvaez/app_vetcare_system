@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            panel1 = new Panel();
+            pnlTop = new Panel();
             lblHeader = new Label();
             btnHome = new FontAwesome.Sharp.IconButton();
             label1 = new Label();
@@ -57,23 +57,23 @@
             btnCreate = new FontAwesome.Sharp.IconButton();
             label9 = new Label();
             errorProvider1 = new ErrorProvider(components);
-            panel1.SuspendLayout();
+            pnlTop.SuspendLayout();
             pnlContainer.SuspendLayout();
             panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
             SuspendLayout();
             // 
-            // panel1
+            // pnlTop
             // 
-            panel1.BackColor = Color.FromArgb(158, 158, 158);
-            panel1.Controls.Add(lblHeader);
-            panel1.Controls.Add(btnHome);
-            panel1.Dock = DockStyle.Top;
-            panel1.Font = new Font("Segoe UI Variable Display", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            panel1.Location = new Point(0, 0);
-            panel1.Name = "panel1";
-            panel1.Size = new Size(1052, 60);
-            panel1.TabIndex = 0;
+            pnlTop.BackColor = Color.FromArgb(158, 158, 158);
+            pnlTop.Controls.Add(lblHeader);
+            pnlTop.Controls.Add(btnHome);
+            pnlTop.Dock = DockStyle.Top;
+            pnlTop.Font = new Font("Segoe UI Variable Display", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            pnlTop.Location = new Point(0, 0);
+            pnlTop.Name = "pnlTop";
+            pnlTop.Size = new Size(1074, 60);
+            pnlTop.TabIndex = 0;
             // 
             // lblHeader
             // 
@@ -100,8 +100,9 @@
             btnHome.Name = "btnHome";
             btnHome.Padding = new Padding(4);
             btnHome.Size = new Size(48, 48);
-            btnHome.TabIndex = 0;
+            btnHome.TabIndex = 11;
             btnHome.UseVisualStyleBackColor = true;
+            btnHome.Click += btnHome_Click;
             // 
             // label1
             // 
@@ -121,7 +122,7 @@
             mskCedula.Mask = "000-000000-0000L";
             mskCedula.Name = "mskCedula";
             mskCedula.Size = new Size(420, 34);
-            mskCedula.TabIndex = 2;
+            mskCedula.TabIndex = 1;
             // 
             // label2
             // 
@@ -139,7 +140,7 @@
             txtName.Margin = new Padding(3, 8, 3, 3);
             txtName.Name = "txtName";
             txtName.Size = new Size(420, 34);
-            txtName.TabIndex = 4;
+            txtName.TabIndex = 2;
             txtName.Validating += txtName_Validating;
             // 
             // label3
@@ -158,7 +159,7 @@
             txtSurname.Margin = new Padding(48, 8, 3, 3);
             txtSurname.Name = "txtSurname";
             txtSurname.Size = new Size(420, 34);
-            txtSurname.TabIndex = 6;
+            txtSurname.TabIndex = 3;
             txtSurname.Validating += txtSurname_Validating;
             // 
             // label4
@@ -180,7 +181,7 @@
             mskMainPhone.Mask = "0000-0000";
             mskMainPhone.Name = "mskMainPhone";
             mskMainPhone.Size = new Size(420, 34);
-            mskMainPhone.TabIndex = 8;
+            mskMainPhone.TabIndex = 4;
             // 
             // label5
             // 
@@ -201,7 +202,7 @@
             mskAlternPhone.Mask = "0000-0000";
             mskAlternPhone.Name = "mskAlternPhone";
             mskAlternPhone.Size = new Size(420, 34);
-            mskAlternPhone.TabIndex = 10;
+            mskAlternPhone.TabIndex = 5;
             // 
             // label6
             // 
@@ -209,17 +210,17 @@
             label6.Font = new Font("Segoe UI Variable Display", 10F);
             label6.Location = new Point(35, 446);
             label6.Name = "label6";
-            label6.Size = new Size(74, 27);
+            label6.Size = new Size(178, 27);
             label6.TabIndex = 11;
-            label6.Text = "Correo";
+            label6.Text = "Correo electrónico";
             // 
             // txtEmail
             // 
             txtEmail.Location = new Point(36, 485);
             txtEmail.Margin = new Padding(3, 8, 3, 3);
             txtEmail.Name = "txtEmail";
-            txtEmail.Size = new Size(887, 34);
-            txtEmail.TabIndex = 12;
+            txtEmail.Size = new Size(886, 34);
+            txtEmail.TabIndex = 6;
             // 
             // label7
             // 
@@ -234,13 +235,14 @@
             // mskPreferredPay
             // 
             mskPreferredPay.Cursor = Cursors.Hand;
+            mskPreferredPay.DropDownStyle = ComboBoxStyle.DropDownList;
             mskPreferredPay.FormattingEnabled = true;
             mskPreferredPay.Items.AddRange(new object[] { "Efectivo", "Transferencia", "Tarjeta Crédito" });
             mskPreferredPay.Location = new Point(36, 797);
             mskPreferredPay.Margin = new Padding(3, 8, 3, 3);
             mskPreferredPay.Name = "mskPreferredPay";
             mskPreferredPay.Size = new Size(887, 35);
-            mskPreferredPay.TabIndex = 14;
+            mskPreferredPay.TabIndex = 8;
             // 
             // label8
             // 
@@ -248,9 +250,9 @@
             label8.Font = new Font("Segoe UI Variable Display", 10F);
             label8.Location = new Point(35, 545);
             label8.Name = "label8";
-            label8.Size = new Size(96, 27);
+            label8.Size = new Size(189, 27);
             label8.TabIndex = 15;
-            label8.Text = "Dirección";
+            label8.Text = "Dirección domiciliar";
             // 
             // txtAddress
             // 
@@ -259,8 +261,8 @@
             txtAddress.Margin = new Padding(3, 8, 3, 3);
             txtAddress.Multiline = true;
             txtAddress.Name = "txtAddress";
-            txtAddress.Size = new Size(891, 77);
-            txtAddress.TabIndex = 16;
+            txtAddress.Size = new Size(891, 78);
+            txtAddress.TabIndex = 7;
             txtAddress.Validating += txtAddress_Validating;
             // 
             // pnlContainer
@@ -286,11 +288,11 @@
             pnlContainer.Controls.Add(mskMainPhone);
             pnlContainer.Controls.Add(label5);
             pnlContainer.Font = new Font("Segoe UI Variable Display", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            pnlContainer.Location = new Point(41, 213);
+            pnlContainer.Location = new Point(57, 213);
             pnlContainer.Margin = new Padding(32, 32, 3, 3);
             pnlContainer.Name = "pnlContainer";
             pnlContainer.Padding = new Padding(8);
-            pnlContainer.Size = new Size(967, 868);
+            pnlContainer.Size = new Size(963, 869);
             pnlContainer.TabIndex = 17;
             // 
             // label12
@@ -329,32 +331,36 @@
             // 
             // panel2
             // 
+            panel2.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            panel2.BackColor = Color.WhiteSmoke;
             panel2.Controls.Add(iconButton1);
             panel2.Controls.Add(btnCreate);
             panel2.Controls.Add(label9);
             panel2.Cursor = Cursors.Hand;
-            panel2.Location = new Point(41, 95);
+            panel2.Location = new Point(57, 95);
             panel2.Margin = new Padding(32, 32, 3, 3);
             panel2.Name = "panel2";
             panel2.Padding = new Padding(16);
-            panel2.Size = new Size(967, 83);
+            panel2.Size = new Size(964, 82);
             panel2.TabIndex = 18;
             // 
             // iconButton1
             // 
+            iconButton1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             iconButton1.Font = new Font("Segoe UI Variable Display", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
             iconButton1.IconChar = FontAwesome.Sharp.IconChar.None;
             iconButton1.IconColor = Color.Black;
             iconButton1.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            iconButton1.Location = new Point(747, 15);
+            iconButton1.Location = new Point(745, 15);
             iconButton1.Name = "iconButton1";
-            iconButton1.Size = new Size(199, 48);
-            iconButton1.TabIndex = 2;
+            iconButton1.Size = new Size(200, 56);
+            iconButton1.TabIndex = 10;
             iconButton1.Text = "Cancelar";
             iconButton1.UseVisualStyleBackColor = true;
             // 
             // btnCreate
             // 
+            btnCreate.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             btnCreate.BackColor = Color.FromArgb(13, 105, 64);
             btnCreate.FlatAppearance.BorderSize = 0;
             btnCreate.FlatStyle = FlatStyle.Flat;
@@ -365,11 +371,12 @@
             btnCreate.IconFont = FontAwesome.Sharp.IconFont.Solid;
             btnCreate.IconSize = 32;
             btnCreate.ImageAlign = ContentAlignment.MiddleLeft;
-            btnCreate.Location = new Point(526, 15);
+            btnCreate.Location = new Point(524, 15);
+            btnCreate.Margin = new Padding(16, 3, 3, 3);
             btnCreate.Name = "btnCreate";
             btnCreate.Padding = new Padding(2);
-            btnCreate.Size = new Size(199, 48);
-            btnCreate.TabIndex = 1;
+            btnCreate.Size = new Size(200, 56);
+            btnCreate.TabIndex = 9;
             btnCreate.Text = "Crear Cliente";
             btnCreate.TextAlign = ContentAlignment.MiddleLeft;
             btnCreate.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -389,21 +396,22 @@
             // 
             // errorProvider1
             // 
+            errorProvider1.BlinkStyle = ErrorBlinkStyle.NeverBlink;
             errorProvider1.ContainerControl = this;
             // 
             // CustomerForm
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1052, 1123);
+            ClientSize = new Size(1074, 1124);
             Controls.Add(panel2);
             Controls.Add(pnlContainer);
-            Controls.Add(panel1);
+            Controls.Add(pnlTop);
             FormBorderStyle = FormBorderStyle.None;
             Name = "CustomerForm";
             Text = "CustomerForm";
-            panel1.ResumeLayout(false);
-            panel1.PerformLayout();
+            pnlTop.ResumeLayout(false);
+            pnlTop.PerformLayout();
             pnlContainer.ResumeLayout(false);
             pnlContainer.PerformLayout();
             panel2.ResumeLayout(false);
@@ -414,7 +422,7 @@
 
         #endregion
 
-        private Panel panel1;
+        private Panel pnlTop;
         private FontAwesome.Sharp.IconButton btnHome;
         private Label lblHeader;
         private Label label1;

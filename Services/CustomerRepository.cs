@@ -85,7 +85,105 @@ namespace app_vetcare_system.Services
                     ex);
             } //End try-catch
         } //end CreateCustomer
-   
+
+        /// <summary>
+        /// Obtiene un cliente por su Id y lo mapea a un objeto CustomersDto
+        /// </summary>
+        /// <param name="customerId">El Id del cliente a obtener</param>
+        /// <returns>Un objeto CustomersDto si se encuentra el cliente, de lo contrario null</returns>
+        /// <exception cref="ArgumentOutOfRangeException"> El Id del cliente no es válido </exception>
+        /// <exception cref="InvalidOperationException"> No fue posible consultar el cliente </exception>
+        public CustomersDto? GetCustomerById(int customerId)
+        {
+            if (customerId <= 0)
+            {
+                throw new ArgumentOutOfRangeException("El Identificador del cliente no es válido.");
+            }
+
+            try
+            {
+                return _context.Clientes
+                    .AsNoTracking()
+                    .Where(cliente =>
+                        cliente.ClienteId == customerId)
+                    .Select(cliente => new CustomersDto
+                    {
+                        Id = cliente.ClienteId,
+                        FirstName = cliente.Nombre,
+                        LastName = cliente.Apellido,
+                        NationalId = cliente.Cedula,
+                        MainPhone = cliente.TelefonoPrincipal,
+                        EmergencyPhone = cliente.TelefonoEmergencia,
+                        Address = cliente.Direccion,
+                        Email = cliente.CorreoElectronico,
+                        PreferredPaymentMethod = cliente.MetodoPagoPreferido
+                    })
+                    .SingleOrDefault();
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException("No fue posible consultar el cliente.",
+                    ex);
+            }//end try-catch
+        }
+
+        /// <summary>
+        /// Actualiza la información de un cliente existente en la base de datos
+        /// </summary>
+        /// <param name="customerId">El Id del cliente a actualizar</param>
+        /// <param name="customer">Los datos del cliente a actualizar</param>
+        /// <exception cref="ArgumentOutOfRangeException"> El Id del cliente no es válido </exception>
+        /// <exception cref="ArgumentNullException"> Los datos del cliente son nulos </exception>
+        /// <exception cref="InvalidOperationException"> No fue posible actualizar el cliente </exception>
+        public void UpdateCustomer(int customerId, CustomerCreateDto customer)
+        {
+            if (customerId <= 0)
+            {
+                throw new ArgumentOutOfRangeException("El Identificador del cliente no es válido.");
+            }
+
+            if (customer is null)
+            {
+                throw new ArgumentNullException("El cliente no existe.");
+            }
+
+            try
+            {
+                var entity = _context.Clientes
+                    .SingleOrDefault(cliente =>
+                        cliente.ClienteId == customerId);
+
+                if (entity is null)
+                {
+                    throw new InvalidOperationException("El cliente no se coincide con el especificado.");
+                }
+
+                entity.Nombre = customer.FirstName;
+                entity.Apellido = customer.LastName;
+                entity.Cedula = customer.NationalId;
+                entity.TelefonoPrincipal = customer.MainPhone;
+                entity.TelefonoEmergencia =
+                    customer.EmergencyPhone;
+                entity.Direccion = customer.Address;
+                entity.CorreoElectronico =
+                    customer.Email;
+                entity.MetodoPagoPreferido =
+                    customer.PreferredPaymentMethod;
+                entity.FechaActualizacion = DateTime.Now;
+
+                _context.SaveChanges();
+            }
+            catch (InvalidOperationException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException("No fue posible actualizar el cliente.",
+                    ex);
+            }
+        }
+
 
     } //end class
 } //end namespace

@@ -47,7 +47,7 @@ namespace app_vetcare_system.View.FormUI
             mskPreferredPay.SelectedIndex = -1;
         }
 
-        private void btnCreate_Click(object sender, EventArgs e)                    
+        private void btnCreate_Click(object sender, EventArgs e)
         {
             if (!ValidateChildren())
             {
@@ -58,7 +58,7 @@ namespace app_vetcare_system.View.FormUI
         }
         public void ShowMessage(string mensaje)
         {
-            MessageBox.Show(mensaje,"Operación exitosa", MessageBoxButtons.OK,  MessageBoxIcon.Information);
+            MessageBox.Show(mensaje, "Operación exitosa", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void txtName_Validating(object sender, System.ComponentModel.CancelEventArgs e)
@@ -104,7 +104,10 @@ namespace app_vetcare_system.View.FormUI
                 errorProvider1.SetError(txtAddress, string.Empty);
             }
         }
-    
-    
+
+        private void btnHome_Click(object sender, EventArgs e)
+        {
+            this.Dispose(); //Cerrar el formulario y liberar recursos
+        }
     } //end class
 } //end namespace

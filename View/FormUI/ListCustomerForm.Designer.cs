@@ -188,6 +188,7 @@
             dgvCustomerList.RowHeadersWidth = 62;
             dgvCustomerList.Size = new Size(1518, 528);
             dgvCustomerList.TabIndex = 2;
+            dgvCustomerList.CellContentClick += dgvCustomerList_CellContentClick;
             // 
             // btnCustomerNew
             // 
@@ -208,7 +209,7 @@
             btnCustomerNew.Margin = new Padding(3, 24, 3, 3);
             btnCustomerNew.Name = "btnCustomerNew";
             btnCustomerNew.Padding = new Padding(4);
-            btnCustomerNew.Size = new Size(226, 63);
+            btnCustomerNew.Size = new Size(226, 56);
             btnCustomerNew.TabIndex = 3;
             btnCustomerNew.Text = "Nuevo Cliente";
             btnCustomerNew.TextAlign = ContentAlignment.MiddleLeft;
@@ -220,7 +221,7 @@
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.FromArgb(210, 210, 210);
+            BackColor = SystemColors.Control;
             ClientSize = new Size(1600, 1055);
             Controls.Add(btnCustomerNew);
             Controls.Add(dgvCustomerList);

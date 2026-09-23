@@ -10,5 +10,9 @@ namespace app_vetcare_system.Services.Interfaz_service
         //Método crear un nuevo cliente
         int CreateCustomer(CustomerCreateDto customer);
 
+        CustomersDto? GetCustomerById(int customerId);
+
+        void UpdateCustomer(int customerId, CustomerCreateDto customer);
+
     } //end interface
 } //end namespace
