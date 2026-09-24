@@ -19,11 +19,11 @@ public partial class Empleado
 
     public string CorreoElectronico { get; set; }
 
-    public DateTime FechaCreacion { get; set; }
+    public DateTime? FechaCreacion { get; set; }
 
     public DateTime? FechaActualizacion { get; set; }
 
-    public bool EstaActivo { get; set; }
+    public bool? EstaActivo { get; set; }
 
     public virtual ICollection<Cita> Cita { get; set; } = new List<Cita>();
 

@@ -1,6 +1,6 @@
 ﻿namespace app_vetcare_system.View.Interfaz
 {
-    public interface IEmployeeView
+    public interface IEmployeeView2
     {
         // Propiedades de lectura / exctritura de los controles
         string Code { get; set; }
