@@ -1,4 +1,5 @@
-﻿using app_vetcare_system.Data;
+﻿using System.Diagnostics;
+using app_vetcare_system.Data;
 using app_vetcare_system.Models.Entities;
 using app_vetcare_system.View.Interfaz;
 using Microsoft.EntityFrameworkCore;
@@ -71,12 +72,16 @@ namespace app_vetcare_system.Presenter
             }
             catch (DbUpdateException ex)
             {
+                Debug.WriteLine(ex);
+
                 //Mostrar mensaje de error
                 _view.ShowMessage("Error Inesperado al procesar datos: ex.Message ", "Acceso Denegado", true);
             }
 
             catch (Exception ex)
             {
+                Debug.WriteLine(ex);
+
                 //Mostrar mensaje de error
                 _view.ShowMessage("Error inesperado:  { ex.Message} ", "Error Crítico", true);
             }

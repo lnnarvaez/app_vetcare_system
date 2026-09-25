@@ -14,5 +14,7 @@ namespace app_vetcare_system.Services.Interfaz_service
 
         void UpdateCustomer(int customerId, CustomerCreateDto customer);
 
+        void DeleteCustomer(int customerId);
+
     } //end interface
 } //end namespace

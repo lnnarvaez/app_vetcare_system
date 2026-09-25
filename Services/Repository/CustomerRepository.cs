@@ -4,7 +4,7 @@ using app_vetcare_system.Models.DTOs;
 using app_vetcare_system.Services.Interfaz_service;
 using Microsoft.EntityFrameworkCore;
 
-namespace app_vetcare_system.Services
+namespace app_vetcare_system.Services.Repository
 {
     public class CustomerRepository : ICustomerRepository
     {
@@ -26,8 +26,9 @@ namespace app_vetcare_system.Services
             try
             {
                 return _context.Clientes
-                .AsNoTracking()
-                .Select(c => new CustomersDto
+                    .AsNoTracking()
+                    .Where(cliente => cliente.EstaActivo)
+                    .Select(c => new CustomersDto
                 {
                     Id = c.ClienteId,
                     FirstName = c.Nombre,
@@ -105,7 +106,8 @@ namespace app_vetcare_system.Services
                 return _context.Clientes
                     .AsNoTracking()
                     .Where(cliente =>
-                        cliente.ClienteId == customerId)
+                        cliente.ClienteId == customerId &&
+                        cliente.EstaActivo)
                     .Select(cliente => new CustomersDto
                     {
                         Id = cliente.ClienteId,
@@ -180,6 +182,51 @@ namespace app_vetcare_system.Services
             catch (Exception ex)
             {
                 throw new InvalidOperationException("No fue posible actualizar el cliente.",
+                    ex);
+            }
+        }
+
+        /// <summary>
+        /// Desactiva lógicamente un cliente sin eliminarlo de la base de datos.
+        /// </summary>
+        /// <param name="customerId">El Id del cliente a desactivar</param>
+        /// <exception cref="ArgumentOutOfRangeException">El Id no es válido</exception>
+        /// <exception cref="InvalidOperationException">No fue posible desactivar el cliente</exception>
+        public void DeleteCustomer(int customerId)
+        {
+            if (customerId <= 0)
+            {
+                throw new ArgumentOutOfRangeException(
+                    nameof(customerId),
+                    "El Id del cliente no es válido.");
+            }
+
+            try
+            {
+                var entity = _context.Clientes
+                    .SingleOrDefault(cliente =>
+                        cliente.ClienteId == customerId &&
+                        cliente.EstaActivo);
+
+                if (entity is null)
+                {
+                    throw new InvalidOperationException(
+                        "El cliente no existe o ya está inactivo.");
+                }
+
+                entity.EstaActivo = false;
+                entity.FechaActualizacion = DateTime.Now;
+
+                _context.SaveChanges();
+            }
+            catch (InvalidOperationException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException(
+                    "No fue posible desactivar el cliente.",
                     ex);
             }
         }

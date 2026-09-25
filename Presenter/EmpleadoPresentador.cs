@@ -1,4 +1,5 @@
-﻿using app_vetcare_si.Data;
+﻿using System.Diagnostics;
+using app_vetcare_si.Data;
 using app_vetcare_si.Models.Entities;
 using app_vetcare_system.View.Interfaz;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -83,6 +84,8 @@ namespace app_vetcare_system.Presenter
             }
             catch (Exception ex)
             {
+                Debug.WriteLine(ex);
+
                 //Mostrar mensaje de error en caso de excepción
                 _eVista.ShowMessage($"Ocurrió un error al intentar crear el empleado", "Error de operación", true);
             }

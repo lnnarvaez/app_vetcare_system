@@ -1,4 +1,5 @@
-﻿using app_vetcare_system.Models.DTOs;
+﻿using System.Diagnostics;
+using app_vetcare_system.Models.DTOs;
 using app_vetcare_system.Services.Interfaz_service;
 using app_vetcare_system.View.Interfaz;
 
@@ -43,6 +44,8 @@ namespace app_vetcare_system.Presenter
             }
             catch (Exception ex)
             {
+                Debug.WriteLine(ex);
+
                 // No exponemos detalles internos de la BD directamente al usuario.
                 _view.ShowErrorMessage("No fue posible cargar la lista de clientes.");
             }
