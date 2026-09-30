@@ -15,7 +15,6 @@ namespace app_vetcare_system
         private readonly VetCareDbSI2VContext _context;
         private AuthenticatedUserDto? _authenticatedUser;
         private AuthenticationLoginForm? _authenticationLoginForm;
-        private string? _activeRole;
 
         public MainContainerForm()
         {
@@ -145,17 +144,23 @@ namespace app_vetcare_system
                 return;
             }
 
-            _authenticatedUser = loginForm.AuthenticatedUser;
+            AuthenticatedUserDto authenticatedUser =
+                loginForm.AuthenticatedUser;
 
-            // Política de autorización temporal hasta
-            // que se configuren los permisos de la base de datos..
-            _activeRole = FixedAdministratorRole;
+            if (!HasAdministratorRole(authenticatedUser))
+            {
+                loginForm.ShowAuthenticationError(
+                    "El usuario no tiene permisos para acceder a la aplicación.");
+                return;
+            }
+
+            _authenticatedUser = authenticatedUser;
             lblUserName.Text = _authenticatedUser.UserName;
 
             splitMain.Panel2.Resize -= Panel2_ResizeAuthenticationForm;
             _authenticationLoginForm = null;
             RemoveCurrentChildForm();
-            SetNavigationAccess(_activeRole == FixedAdministratorRole);
+            SetNavigationAccess(true);
         }
 
         private void RemoveCurrentChildForm()
@@ -189,7 +194,17 @@ namespace app_vetcare_system
         private bool HasNavigationAccess()
         {
             return _authenticatedUser is not null &&
-                   _activeRole == FixedAdministratorRole;
+                   HasAdministratorRole(_authenticatedUser);
+        }
+
+        private static bool HasAdministratorRole(
+            AuthenticatedUserDto authenticatedUser)
+        {
+            return authenticatedUser.Roles.Any(role =>
+                string.Equals(
+                    role?.Trim(),
+                    FixedAdministratorRole,
+                    StringComparison.OrdinalIgnoreCase));
         }
 
         private void BtnClientes_Click(object sender, EventArgs e)

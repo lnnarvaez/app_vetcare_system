@@ -5,15 +5,19 @@ using app_vetcare_system.View.Interfaz;
 
 namespace app_vetcare_system.View.FormUI
 {
-    public partial class CustomerEditForm : Form, ICustomerEditView
+    public partial class CustomerEditForm : Form, ICustomerEditView, ICustomerDeleteView
     {
         private readonly CustomerEditPresenter _presenter;
-        
+        private readonly CustomerDeletePresenter _deletePresenter;
+        private readonly int _customerId;
+
         public CustomerEditForm(ICustomerRepository repository, int customerId)
         {
             InitializeComponent();
 
+            _customerId = customerId;
             _presenter = new CustomerEditPresenter(this, repository, customerId);
+            _deletePresenter = new CustomerDeletePresenter(this, repository);
 
             Load += CustomerEditForm_Load;
         }
@@ -53,6 +57,32 @@ namespace app_vetcare_system.View.FormUI
         public void ShowMessage(string message)
         {
             MessageBox.Show(message, "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            DialogResult confirmation = MessageBox.Show(
+                this,
+                "¿Está seguro de que desea eliminar este cliente?",
+                "Confirmar eliminación",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning);
+
+            if (confirmation != DialogResult.Yes)
+            {
+                return;
+            }
+
+            _deletePresenter.DeleteCustomer(
+                new CustomerDeleteDto
+                {
+                    CustomerId = _customerId
+                });
+        }
+
+        public void CloseView()
+        {
+            Dispose();
         }
 
         #region Implementar ICustomerEditView

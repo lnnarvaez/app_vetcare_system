@@ -29,9 +29,10 @@
         private void InitializeComponent()
         {
             panel1 = new Panel();
+            label12 = new Label();
             btnHome = new FontAwesome.Sharp.IconButton();
             panel2 = new Panel();
-            btnCancel = new FontAwesome.Sharp.IconButton();
+            btnDelete = new FontAwesome.Sharp.IconButton();
             btnSave = new FontAwesome.Sharp.IconButton();
             panel3 = new Panel();
             cmbPayMethod = new ComboBox();
@@ -61,12 +62,23 @@
             // panel1
             // 
             panel1.BackColor = Color.FromArgb(158, 158, 158);
+            panel1.Controls.Add(label12);
             panel1.Controls.Add(btnHome);
             panel1.Dock = DockStyle.Top;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
             panel1.Size = new Size(1074, 60);
             panel1.TabIndex = 0;
+            // 
+            // label12
+            // 
+            label12.AutoSize = true;
+            label12.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label12.Location = new Point(92, 18);
+            label12.Name = "label12";
+            label12.Size = new Size(125, 28);
+            label12.TabIndex = 1;
+            label12.Text = "Inicio | Editar";
             // 
             // btnHome
             // 
@@ -86,27 +98,31 @@
             // panel2
             // 
             panel2.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            panel2.Controls.Add(btnCancel);
+            panel2.Controls.Add(btnDelete);
             panel2.Controls.Add(btnSave);
             panel2.Location = new Point(58, 94);
             panel2.Name = "panel2";
-            panel2.Size = new Size(964, 82);
+            panel2.Size = new Size(964, 90);
             panel2.TabIndex = 1;
             // 
-            // btnCancel
+            // btnDelete
             // 
-            btnCancel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnCancel.Cursor = Cursors.Hand;
-            btnCancel.IconChar = FontAwesome.Sharp.IconChar.None;
-            btnCancel.IconColor = Color.Black;
-            btnCancel.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            btnCancel.Location = new Point(718, 14);
-            btnCancel.Margin = new Padding(3, 3, 32, 3);
-            btnCancel.Name = "btnCancel";
-            btnCancel.Size = new Size(200, 56);
-            btnCancel.TabIndex = 1;
-            btnCancel.Text = "Cancelar";
-            btnCancel.UseVisualStyleBackColor = true;
+            btnDelete.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnDelete.Cursor = Cursors.Hand;
+            btnDelete.FlatAppearance.BorderSize = 0;
+            btnDelete.FlatAppearance.MouseOverBackColor = Color.FromArgb(190, 190, 190);
+            btnDelete.FlatStyle = FlatStyle.Flat;
+            btnDelete.IconChar = FontAwesome.Sharp.IconChar.TrashAlt;
+            btnDelete.IconColor = Color.FromArgb(66, 66, 66);
+            btnDelete.IconFont = FontAwesome.Sharp.IconFont.Solid;
+            btnDelete.IconSize = 40;
+            btnDelete.Location = new Point(884, 21);
+            btnDelete.Margin = new Padding(3, 3, 32, 3);
+            btnDelete.Name = "btnDelete";
+            btnDelete.Size = new Size(48, 48);
+            btnDelete.TabIndex = 1;
+            btnDelete.UseVisualStyleBackColor = true;
+            btnDelete.Click += btnDelete_Click;
             // 
             // btnSave
             // 
@@ -119,7 +135,8 @@
             btnSave.IconChar = FontAwesome.Sharp.IconChar.Save;
             btnSave.IconColor = Color.WhiteSmoke;
             btnSave.IconFont = FontAwesome.Sharp.IconFont.Solid;
-            btnSave.Location = new Point(491, 13);
+            btnSave.IconSize = 40;
+            btnSave.Location = new Point(657, 16);
             btnSave.Margin = new Padding(3, 3, 24, 3);
             btnSave.Name = "btnSave";
             btnSave.Padding = new Padding(2);
@@ -364,6 +381,7 @@
             Name = "CustomerEditForm";
             Text = "CustomerEditForm";
             panel1.ResumeLayout(false);
+            panel1.PerformLayout();
             panel2.ResumeLayout(false);
             panel3.ResumeLayout(false);
             panel3.PerformLayout();
@@ -396,6 +414,7 @@
         private ComboBox cmbPayMethod;
         private FontAwesome.Sharp.IconButton btnHome;
         private FontAwesome.Sharp.IconButton btnSave;
-        private FontAwesome.Sharp.IconButton btnCancel;
+        private FontAwesome.Sharp.IconButton btnDelete;
+        private Label label12;
     }
 }

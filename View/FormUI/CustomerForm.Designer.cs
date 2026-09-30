@@ -53,10 +53,10 @@
             label11 = new Label();
             label10 = new Label();
             panel2 = new Panel();
-            iconButton1 = new FontAwesome.Sharp.IconButton();
             btnCreate = new FontAwesome.Sharp.IconButton();
             label9 = new Label();
             errorProvider1 = new ErrorProvider(components);
+            btnCancel = new FontAwesome.Sharp.IconButton();
             pnlTop.SuspendLayout();
             pnlContainer.SuspendLayout();
             panel2.SuspendLayout();
@@ -333,7 +333,7 @@
             // 
             panel2.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             panel2.BackColor = Color.WhiteSmoke;
-            panel2.Controls.Add(iconButton1);
+            panel2.Controls.Add(btnCancel);
             panel2.Controls.Add(btnCreate);
             panel2.Controls.Add(label9);
             panel2.Cursor = Cursors.Hand;
@@ -343,20 +343,6 @@
             panel2.Padding = new Padding(16);
             panel2.Size = new Size(964, 82);
             panel2.TabIndex = 18;
-            // 
-            // iconButton1
-            // 
-            iconButton1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            iconButton1.Font = new Font("Segoe UI Variable Display", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            iconButton1.IconChar = FontAwesome.Sharp.IconChar.None;
-            iconButton1.IconColor = Color.Black;
-            iconButton1.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            iconButton1.Location = new Point(745, 15);
-            iconButton1.Name = "iconButton1";
-            iconButton1.Size = new Size(200, 56);
-            iconButton1.TabIndex = 10;
-            iconButton1.Text = "Cancelar";
-            iconButton1.UseVisualStyleBackColor = true;
             // 
             // btnCreate
             // 
@@ -371,11 +357,11 @@
             btnCreate.IconFont = FontAwesome.Sharp.IconFont.Solid;
             btnCreate.IconSize = 32;
             btnCreate.ImageAlign = ContentAlignment.MiddleLeft;
-            btnCreate.Location = new Point(524, 15);
-            btnCreate.Margin = new Padding(16, 3, 3, 3);
+            btnCreate.Location = new Point(497, 15);
+            btnCreate.Margin = new Padding(16, 3, 24, 3);
             btnCreate.Name = "btnCreate";
-            btnCreate.Padding = new Padding(2);
-            btnCreate.Size = new Size(200, 56);
+            btnCreate.Padding = new Padding(8, 2, 2, 2);
+            btnCreate.Size = new Size(200, 48);
             btnCreate.TabIndex = 9;
             btnCreate.Text = "Crear Cliente";
             btnCreate.TextAlign = ContentAlignment.MiddleLeft;
@@ -398,6 +384,28 @@
             // 
             errorProvider1.BlinkStyle = ErrorBlinkStyle.NeverBlink;
             errorProvider1.ContainerControl = this;
+            // 
+            // btnCancel
+            // 
+            btnCancel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnCancel.BackColor = Color.FromArgb(210, 210, 210);
+            btnCancel.FlatAppearance.BorderSize = 0;
+            btnCancel.FlatAppearance.MouseOverBackColor = Color.FromArgb(190, 190, 190);
+            btnCancel.FlatStyle = FlatStyle.Flat;
+            btnCancel.Font = new Font("Segoe UI Variable Display", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            btnCancel.IconChar = FontAwesome.Sharp.IconChar.Cancel;
+            btnCancel.IconColor = Color.FromArgb(66, 66, 66);
+            btnCancel.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            btnCancel.IconSize = 40;
+            btnCancel.ImageAlign = ContentAlignment.MiddleLeft;
+            btnCancel.Location = new Point(724, 15);
+            btnCancel.Margin = new Padding(3, 3, 24, 3);
+            btnCancel.Name = "btnCancel";
+            btnCancel.Padding = new Padding(8, 0, 0, 0);
+            btnCancel.Size = new Size(200, 48);
+            btnCancel.TabIndex = 10;
+            btnCancel.Text = "Cancelar";
+            btnCancel.UseVisualStyleBackColor = false;
             // 
             // CustomerForm
             // 
@@ -447,8 +455,8 @@
         private FontAwesome.Sharp.IconButton btnCreate;
         private Label label10;
         private Label label11;
-        private FontAwesome.Sharp.IconButton iconButton1;
         private Label label12;
         private ErrorProvider errorProvider1;
+        private FontAwesome.Sharp.IconButton btnCancel;
     }
 }

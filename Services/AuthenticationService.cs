@@ -62,7 +62,36 @@ namespace app_vetcare_system.Services
                     UserName = user.UserName,
                     EmployeeName = user.EmployeeName,
                     Roles = user.Roles
-                });
+            });
+        }
+
+        public void ResetPassword(string userName, string newPassword)
+        {
+            if (string.IsNullOrWhiteSpace(userName))
+            {
+                throw new ArgumentException(
+                    "El nombre de usuario es obligatorio.",
+                    nameof(userName));
+            }
+
+            if (string.IsNullOrEmpty(newPassword))
+            {
+                throw new ArgumentException(
+                    "La nueva contraseña es obligatoria.",
+                    nameof(newPassword));
+            }
+
+            UserAuthenticationDataDto? user =
+                _usuarioRepository.GetUserAuthenticationData(userName.Trim());
+
+            if (user is null)
+            {
+                throw new InvalidOperationException(
+                    "El usuario no existe o está inactivo.");
+            }
+
+            string passwordHash = _passwordHasher.HashPassword(newPassword);
+            _usuarioRepository.UpdatePassword(user.UserId, passwordHash);
         }
     }
 }

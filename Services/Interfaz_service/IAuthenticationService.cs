@@ -6,5 +6,7 @@ namespace app_vetcare_system.Services.Interfaz_service
     {
         AuthenticationResultDto Authenticate(
             AuthenticationRequestDto request);
+
+        void ResetPassword(string userName, string newPassword);
     }
 }

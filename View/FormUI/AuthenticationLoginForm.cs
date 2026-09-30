@@ -8,10 +8,14 @@ namespace app_vetcare_system.View.FormUI
     public partial class AuthenticationLoginForm : Form, IAuthenticationView
     {
         private readonly AuthenticationPresenter _presenter;
+        private readonly IAuthenticationService _authenticationService;
 
         public AuthenticationLoginForm(IAuthenticationService authenticationService)
         {
             InitializeComponent();
+
+            _authenticationService = authenticationService
+                ?? throw new ArgumentNullException(nameof(authenticationService));
 
             _presenter = new AuthenticationPresenter(this, authenticationService);
             btnContinue.Click += ButtonContinue_Click;
@@ -51,7 +55,11 @@ namespace app_vetcare_system.View.FormUI
 
         private void btnRecovery_Click(object sender, EventArgs e)
         {
+            using var recoverAccessForm = new RecoverAccessForm(
+                _authenticationService,
+                UserName);
 
+            recoverAccessForm.ShowDialog(this);
         }
     }
 }

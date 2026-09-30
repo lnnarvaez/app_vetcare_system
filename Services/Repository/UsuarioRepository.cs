@@ -77,7 +77,7 @@ namespace app_vetcare_system.Services.Repository
                         "El usuario no existe.");
                 }
 
-                user.FechaUltimaSesion = lastLogin;
+                user.FechaUltimaSesion = lastLogin; 
                 _context.SaveChanges();
             }
             catch (InvalidOperationException)
@@ -88,6 +88,49 @@ namespace app_vetcare_system.Services.Repository
             {
                 throw new InvalidOperationException(
                     "No fue posible actualizar la última sesión.",
+                    ex);
+            }
+        }
+
+        public void UpdatePassword(int userId, string passwordHash)
+        {
+            if (userId <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(userId));
+            }
+
+            if (string.IsNullOrWhiteSpace(passwordHash))
+            {
+                throw new ArgumentException(
+                    "El hash de contraseña es obligatorio.",
+                    nameof(passwordHash));
+            }
+
+            try
+            {
+                var user = _context.Usuarios
+                    .SingleOrDefault(usuario =>
+                        usuario.UsuarioId == userId &&
+                        usuario.EstaActivo);
+
+                if (user is null)
+                {
+                    throw new InvalidOperationException(
+                        "El usuario no existe o está inactivo.");
+                }
+
+                user.HashContrasena = passwordHash;
+                user.FechaActualizacion = DateTime.Now;
+                _context.SaveChanges();
+            }
+            catch (InvalidOperationException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException(
+                    "No fue posible actualizar la contraseña.",
                     ex);
             }
         }

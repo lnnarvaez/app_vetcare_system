@@ -8,5 +8,7 @@ namespace app_vetcare_system.Services.Interfaz_service
             string userName);
 
         void UpdateLastLogin(int userId, DateTime lastLogin);
+
+        void UpdatePassword(int userId, string passwordHash);
     }
 }
