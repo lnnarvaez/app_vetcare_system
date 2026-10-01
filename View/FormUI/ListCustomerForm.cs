@@ -1,4 +1,4 @@
-﻿using app_vetcare_system.Models.DTOs;
+using app_vetcare_system.Models.DTOs;
 using app_vetcare_system.Presenter;
 using app_vetcare_system.Services.Interfaz_service;
 using app_vetcare_system.View.Interfaz;
@@ -180,14 +180,14 @@ namespace app_vetcare_system.View
         #endregion
 
         #region Implementación ICustomerListView
-        public void ShowCustomers(IEnumerable<CustomersDto> customers)
+        public void ShowCustomers(IReadOnlyList<CustomersDto> customers)
         {
             if (_isClosing || IsDisposed || Disposing)
             {
                 return;
             }
 
-            _bindingSource.DataSource = customers.ToList();
+            _bindingSource.DataSource = customers;
         }
 
         public void ShowNoRecords()

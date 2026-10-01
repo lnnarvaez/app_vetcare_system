@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using app_vetcare_system.Models.DTOs;
 using app_vetcare_system.Services.Interfaz_service;
 using app_vetcare_system.View.Interfaz;
@@ -11,7 +11,7 @@ namespace app_vetcare_system.Presenter
     public class CustomerListPresenter
     {
         private readonly ICustomerListView _view;
-        private readonly ICustomerRepository _repository;                
+        private readonly ICustomerRepository _repository;
 
         public CustomerListPresenter(ICustomerListView view, ICustomerRepository repository)
         {
@@ -29,10 +29,8 @@ namespace app_vetcare_system.Presenter
         {
             try
             {
-                var customers =
-                    _repository
-                        .GetAllCustomers()
-                        .ToList();
+                IReadOnlyList<CustomersDto> customers =
+                    _repository.GetAllCustomers();
 
                 if (customers.Count == 0)
                 {

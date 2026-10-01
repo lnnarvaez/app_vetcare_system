@@ -1,4 +1,4 @@
-﻿using app_vetcare_si.Data;
+using app_vetcare_si.Data;
 using app_vetcare_si.Models.Entities;
 using app_vetcare_system.Models.DTOs;
 using app_vetcare_system.Services.Interfaz_service;
@@ -8,45 +8,43 @@ namespace app_vetcare_system.Services.Repository
 {
     public class CustomerRepository : ICustomerRepository
     {
-        //Manejar el contexto de la base de datos
         private readonly VetCareDbSI2VContext _context;
 
-        //Constructor que recibe el contexto de la base de datos
         public CustomerRepository(VetCareDbSI2VContext context)
         {
-            _context = context;
+            _context = context
+                ?? throw new ArgumentNullException(nameof(context));
         }
 
         /// <summary>
         /// Obtiene todos los clientes de la base de datos y los mapea a objetos CustomersDto
         /// </summary>
         /// <returns>Una lista de objetos CustomersDto</returns>
-        public IEnumerable<CustomersDto> GetAllCustomers()
+        public IReadOnlyList<CustomersDto> GetAllCustomers()
         {
             try
             {
+                // Los clientes inactivos se excluyen para respetar el borrado lógico.
                 return _context.Clientes
                     .AsNoTracking()
                     .Where(cliente => cliente.EstaActivo)
                     .Select(c => new CustomersDto
-                {
-                    Id = c.ClienteId,
-                    FirstName = c.Nombre,
-                    LastName = c.Apellido,
-                    NationalId = c.Cedula,
-                    MainPhone = c.TelefonoPrincipal,
-                    EmergencyPhone = c.TelefonoEmergencia,
-                    Address = c.Direccion,
-                    Email = c.CorreoElectronico
-                })
-                .ToList();
-                            }
+                    {
+                        Id = c.ClienteId,
+                        FirstName = c.Nombre,
+                        LastName = c.Apellido,
+                        NationalId = c.Cedula,
+                        MainPhone = c.TelefonoPrincipal,
+                        EmergencyPhone = c.TelefonoEmergencia,
+                        Address = c.Direccion,
+                        Email = c.CorreoElectronico
+                    })
+                    .ToList();
+            }
             catch (Exception ex)
             {
-                // Manejo de excepciones
                 throw new InvalidOperationException("No fue posible obtener los clientes.", ex);
             }
-            
         }
 
         public int CreateCustomer(CustomerCreateDto customer)
