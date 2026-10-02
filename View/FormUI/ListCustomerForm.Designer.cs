@@ -65,9 +65,9 @@
             lblBuscar.Location = new Point(100, 19);
             lblBuscar.Margin = new Padding(8, 0, 3, 0);
             lblBuscar.Name = "lblBuscar";
-            lblBuscar.Size = new Size(152, 27);
+            lblBuscar.Size = new Size(167, 27);
             lblBuscar.TabIndex = 1;
-            lblBuscar.Text = "Buscar Clientes";
+            lblBuscar.Text = "Clientes | Listado";
             // 
             // btnHome
             // 

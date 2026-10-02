@@ -78,7 +78,7 @@
             // lblHeader
             // 
             lblHeader.AutoSize = true;
-            lblHeader.Font = new Font("Segoe UI Variable Text Semibold", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblHeader.Font = new Font("Segoe UI Variable Display Semib", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblHeader.ForeColor = Color.FromArgb(66, 66, 66);
             lblHeader.Location = new Point(108, 20);
             lblHeader.Margin = new Padding(16, 0, 3, 0);

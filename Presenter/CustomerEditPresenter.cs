@@ -1,4 +1,4 @@
-﻿using app_vetcare_system.Models.DTOs;
+using app_vetcare_system.Models.DTOs;
 using app_vetcare_system.Services.Interfaz_service;
 using app_vetcare_system.View.Interfaz;
 
@@ -31,12 +31,12 @@ namespace app_vetcare_system.Presenter
         /// <summary>
         /// Consulta el cliente y envía sus datos a la vista.
         /// </summary>
-        public void LoadCustomer()
+        public async Task LoadCustomerAsync()
         {
             try
             {
                 CustomersDto? customer =
-                    _repository.GetCustomerById(_customerId);
+                    await _repository.GetCustomerByIdAsync(_customerId);
 
                 _view.ShowCustomer(customer);
             }
@@ -49,7 +49,7 @@ namespace app_vetcare_system.Presenter
         /// <summary>
         /// Obtiene los valores de la vista y solicita al repositorio actualizar el cliente.
         /// </summary>
-        public void SaveChanges()
+        public async Task SaveChangesAsync()
         {
             try
             {
@@ -65,7 +65,7 @@ namespace app_vetcare_system.Presenter
                     PreferredPaymentMethod = _view.PreferredPaymentMethod
                 };
 
-                _repository.UpdateCustomer(_customerId, customer);
+                await _repository.UpdateCustomerAsync(_customerId, customer);
 
                 _view.ShowMessage(
                     "Cliente actualizado correctamente.");

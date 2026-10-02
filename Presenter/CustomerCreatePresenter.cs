@@ -1,4 +1,4 @@
-﻿using app_vetcare_system.Models.DTOs;
+using app_vetcare_system.Models.DTOs;
 using app_vetcare_system.Services.Interfaz_service;
 using app_vetcare_system.View.Interfaz;
 
@@ -24,7 +24,7 @@ namespace app_vetcare_system.Presenter
         /// <summary>
         /// Captura los datos de la Vista y solicita al repositorio registrar el cliente.
         /// </summary>
-        public void CreateCustomer()
+        public async Task CreateCustomerAsync()
         {
             try
             {
@@ -40,7 +40,7 @@ namespace app_vetcare_system.Presenter
                     PreferredPaymentMethod = _view.PreferredPaymentMethod
                 };
 
-                _repository.CreateCustomer(customer);
+                await _repository.CreateCustomerAsync(customer);
 
                 _view.ShowMessage("El cliente fue registrado correctamente.");
 

@@ -45,14 +45,14 @@ namespace app_vetcare_system.View
 
         #region Eventos del formulario
 
-        private void ListCustomerForm_Load(object sender, EventArgs e)
+        private async void ListCustomerForm_Load(object sender, EventArgs e)
         {
             if (_isClosing || IsDisposed || Disposing)
             {
                 return;
             }
 
-            _presenter.LoadCustomers();
+            await _presenter.LoadCustomersAsync();
         }
 
         private void ListCustomerForm_FormClosing(
@@ -69,7 +69,7 @@ namespace app_vetcare_system.View
         /// </summary>
         private void btnHome_Click(object sender, EventArgs e)
         {
-            Close();
+            this.Dispose();
         }
 
         /// <summary>

@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             panel1 = new Panel();
+            label12 = new Label();
             btnHome = new FontAwesome.Sharp.IconButton();
             panel2 = new Panel();
             btnCancel = new FontAwesome.Sharp.IconButton();
@@ -61,6 +62,7 @@
             // panel1
             // 
             panel1.BackColor = Color.FromArgb(158, 158, 158);
+            panel1.Controls.Add(label12);
             panel1.Controls.Add(btnHome);
             panel1.Dock = DockStyle.Top;
             panel1.Location = new Point(0, 0);
@@ -68,8 +70,21 @@
             panel1.Size = new Size(1074, 60);
             panel1.TabIndex = 0;
             // 
+            // label12
+            // 
+            label12.AutoSize = true;
+            label12.Font = new Font("Segoe UI Variable Display Semib", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label12.ForeColor = Color.FromArgb(66, 66, 66);
+            label12.Location = new Point(99, 21);
+            label12.Margin = new Padding(16, 0, 3, 0);
+            label12.Name = "label12";
+            label12.Size = new Size(158, 27);
+            label12.TabIndex = 1;
+            label12.Text = "Cliente | Edición";
+            // 
             // btnHome
             // 
+            btnHome.Cursor = Cursors.Hand;
             btnHome.FlatAppearance.BorderSize = 0;
             btnHome.FlatStyle = FlatStyle.Flat;
             btnHome.IconChar = FontAwesome.Sharp.IconChar.HomeLg;
@@ -82,6 +97,7 @@
             btnHome.Size = new Size(48, 48);
             btnHome.TabIndex = 0;
             btnHome.UseVisualStyleBackColor = true;
+            btnHome.Click += btnHome_Click;
             // 
             // panel2
             // 
@@ -364,6 +380,7 @@
             Name = "CustomerEditForm";
             Text = "CustomerEditForm";
             panel1.ResumeLayout(false);
+            panel1.PerformLayout();
             panel2.ResumeLayout(false);
             panel3.ResumeLayout(false);
             panel3.PerformLayout();
@@ -397,5 +414,6 @@
         private FontAwesome.Sharp.IconButton btnHome;
         private FontAwesome.Sharp.IconButton btnSave;
         private FontAwesome.Sharp.IconButton btnCancel;
+        private Label label12;
     }
 }

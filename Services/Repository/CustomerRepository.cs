@@ -20,12 +20,12 @@ namespace app_vetcare_system.Services.Repository
         /// Obtiene todos los clientes de la base de datos y los mapea a objetos CustomersDto
         /// </summary>
         /// <returns>Una lista de objetos CustomersDto</returns>
-        public IReadOnlyList<CustomersDto> GetAllCustomers()
+        public async Task<IReadOnlyList<CustomersDto>> GetAllCustomersAsync()
         {
             try
             {
                 // Los clientes inactivos se excluyen para respetar el borrado lógico.
-                return _context.Clientes
+                return await _context.Clientes
                     .AsNoTracking()
                     .Where(cliente => cliente.EstaActivo)
                     .Select(c => new CustomersDto
@@ -39,7 +39,7 @@ namespace app_vetcare_system.Services.Repository
                         Address = c.Direccion,
                         Email = c.CorreoElectronico
                     })
-                    .ToList();
+                    .ToListAsync();
             }
             catch (Exception ex)
             {
@@ -47,12 +47,19 @@ namespace app_vetcare_system.Services.Repository
             }
         }
 
-        public int CreateCustomer(CustomerCreateDto customer)
+        /// <summary>
+        /// Crea un nuevo cliente en la base de datos a partir de un objeto CustomerCreateDto
+        /// </summary>
+        /// <param name="customer">El objeto CustomerCreateDto que contiene la información del cliente a crear</param>
+        /// <returns>El Id del cliente creado</returns>
+        /// <exception cref="ArgumentNullException">Se lanza si el objeto CustomerCreateDto es nulo</exception>
+        /// <exception cref="InvalidOperationException">Se lanza si ocurre un error al crear el cliente</exception>
+        public async Task<int> CreateCustomerAsync(CustomerCreateDto customer)
         {
             if (customer is null)
             {
                 throw new ArgumentNullException(
-                    "Información del cliente es nula.");
+                    "Información del cliente es vacía.");
             }
 
             try
@@ -73,7 +80,7 @@ namespace app_vetcare_system.Services.Repository
 
                 _context.Clientes.Add(entity);
 
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
                 return entity.ClienteId;
             }
@@ -92,7 +99,7 @@ namespace app_vetcare_system.Services.Repository
         /// <returns>Un objeto CustomersDto si se encuentra el cliente, de lo contrario null</returns>
         /// <exception cref="ArgumentOutOfRangeException"> El Id del cliente no es válido </exception>
         /// <exception cref="InvalidOperationException"> No fue posible consultar el cliente </exception>
-        public CustomersDto? GetCustomerById(int customerId)
+        public async Task<CustomersDto?> GetCustomerByIdAsync(int customerId)
         {
             if (customerId <= 0)
             {
@@ -101,7 +108,7 @@ namespace app_vetcare_system.Services.Repository
 
             try
             {
-                return _context.Clientes
+                return await _context.Clientes
                     .AsNoTracking()
                     .Where(cliente =>
                         cliente.ClienteId == customerId &&
@@ -118,7 +125,7 @@ namespace app_vetcare_system.Services.Repository
                         Email = cliente.CorreoElectronico,
                         PreferredPaymentMethod = cliente.MetodoPagoPreferido
                     })
-                    .SingleOrDefault();
+                    .SingleOrDefaultAsync();
             }
             catch (Exception ex)
             {
@@ -135,7 +142,7 @@ namespace app_vetcare_system.Services.Repository
         /// <exception cref="ArgumentOutOfRangeException"> El Id del cliente no es válido </exception>
         /// <exception cref="ArgumentNullException"> Los datos del cliente son nulos </exception>
         /// <exception cref="InvalidOperationException"> No fue posible actualizar el cliente </exception>
-        public void UpdateCustomer(int customerId, CustomerCreateDto customer)
+        public async Task UpdateCustomerAsync(int customerId, CustomerCreateDto customer)
         {
             if (customerId <= 0)
             {
@@ -149,8 +156,8 @@ namespace app_vetcare_system.Services.Repository
 
             try
             {
-                var entity = _context.Clientes
-                    .SingleOrDefault(cliente =>
+                var entity = await _context.Clientes
+                    .SingleOrDefaultAsync(cliente =>
                         cliente.ClienteId == customerId);
 
                 if (entity is null)
@@ -171,7 +178,7 @@ namespace app_vetcare_system.Services.Repository
                     customer.PreferredPaymentMethod;
                 entity.FechaActualizacion = DateTime.Now;
 
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             catch (InvalidOperationException)
             {
@@ -190,7 +197,7 @@ namespace app_vetcare_system.Services.Repository
         /// <param name="customerId">El Id del cliente a desactivar</param>
         /// <exception cref="ArgumentOutOfRangeException">El Id no es válido</exception>
         /// <exception cref="InvalidOperationException">No fue posible desactivar el cliente</exception>
-        public void DeleteCustomer(int customerId)
+        public async Task DeleteCustomerAsync(int customerId)
         {
             if (customerId <= 0)
             {
@@ -201,8 +208,8 @@ namespace app_vetcare_system.Services.Repository
 
             try
             {
-                var entity = _context.Clientes
-                    .SingleOrDefault(cliente =>
+                var entity = await _context.Clientes
+                    .SingleOrDefaultAsync(cliente =>
                         cliente.ClienteId == customerId &&
                         cliente.EstaActivo);
 
@@ -215,7 +222,7 @@ namespace app_vetcare_system.Services.Repository
                 entity.EstaActivo = false;
                 entity.FechaActualizacion = DateTime.Now;
 
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             catch (InvalidOperationException)
             {

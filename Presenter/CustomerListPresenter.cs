@@ -25,12 +25,12 @@ namespace app_vetcare_system.Presenter
         /// <summary>
         /// Obtiene los clientes desde el repositorio y solicita a la Vista que los muestre.
         /// </summary>
-        public void LoadCustomers()
+        public async Task LoadCustomersAsync()
         {
             try
             {
                 IReadOnlyList<CustomersDto> customers =
-                    _repository.GetAllCustomers();
+                    await _repository.GetAllCustomersAsync();
 
                 if (customers.Count == 0)
                 {

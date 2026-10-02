@@ -23,7 +23,7 @@ namespace app_vetcare_system.Presenter
         /// <summary>
         /// Solicita al repositorio desactivar lógicamente al cliente.
         /// </summary>
-        public void DeleteCustomer(CustomerDeleteDto customer)
+        public async Task DeleteCustomerAsync(CustomerDeleteDto customer)
         {
             try
             {
@@ -32,7 +32,7 @@ namespace app_vetcare_system.Presenter
                     throw new ArgumentNullException(nameof(customer));
                 }
 
-                _repository.DeleteCustomer(customer.CustomerId);
+                await _repository.DeleteCustomerAsync(customer.CustomerId);
 
                 _view.ShowMessage(
                     "El cliente fue desactivado correctamente.");

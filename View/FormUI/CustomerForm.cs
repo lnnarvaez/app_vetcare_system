@@ -1,4 +1,4 @@
-﻿using app_vetcare_system.Models.DTOs;
+using app_vetcare_system.Models.DTOs;
 using app_vetcare_system.Presenter;
 using app_vetcare_system.Services.Interfaz_service;
 using app_vetcare_system.View.Interfaz;
@@ -47,14 +47,14 @@ namespace app_vetcare_system.View.FormUI
             mskPreferredPay.SelectedIndex = -1;
         }
 
-        private void btnCreate_Click(object sender, EventArgs e)
+        private async void btnCreate_Click(object sender, EventArgs e)
         {
             if (!ValidateChildren())
             {
                 return;
             } //end if
 
-            _presenter.CreateCustomer();
+            await _presenter.CreateCustomerAsync();
         }
         public void ShowMessage(string mensaje)
         {

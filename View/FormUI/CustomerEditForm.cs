@@ -1,4 +1,4 @@
-﻿using app_vetcare_system.Models.DTOs;
+using app_vetcare_system.Models.DTOs;
 using app_vetcare_system.Presenter;
 using app_vetcare_system.Services.Interfaz_service;
 using app_vetcare_system.View.Interfaz;
@@ -8,7 +8,7 @@ namespace app_vetcare_system.View.FormUI
     public partial class CustomerEditForm : Form, ICustomerEditView
     {
         private readonly CustomerEditPresenter _presenter;
-        
+
         public CustomerEditForm(ICustomerRepository repository, int customerId)
         {
             InitializeComponent();
@@ -18,9 +18,9 @@ namespace app_vetcare_system.View.FormUI
             Load += CustomerEditForm_Load;
         }
 
-        private void CustomerEditForm_Load(object? sender, EventArgs e)
+        private async void CustomerEditForm_Load(object? sender, EventArgs e)
         {
-            _presenter.LoadCustomer();
+            await _presenter.LoadCustomerAsync();
         }
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace app_vetcare_system.View.FormUI
             cmbPayMethod.SelectedItem = customer.PreferredPaymentMethod;
         }
 
-        private void btnSave_Click(object sender, EventArgs e)
+        private async void btnSave_Click(object sender, EventArgs e)
         {
             if (!ValidateChildren())
             {
@@ -47,12 +47,17 @@ namespace app_vetcare_system.View.FormUI
             }
 
             // El formulario no actualiza directamente. La operación la coordina el Presenter. 
-            _presenter.SaveChanges();
+            await _presenter.SaveChangesAsync();
         }
 
         public void ShowMessage(string message)
         {
             MessageBox.Show(message, "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void btnHome_Click(object sender, EventArgs e)
+        {
+             this.Dispose();
         }
 
         #region Implementar ICustomerEditView
