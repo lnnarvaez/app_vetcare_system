@@ -5,14 +5,17 @@ namespace app_vetcare_system.Services.Interfaz_service
     public interface ICustomerRepository
     {
         // Método para obtener todos los clientes
-        IEnumerable<CustomersDto> GetAllCustomers();
-
+        Task<IReadOnlyList<CustomersDto>> GetAllCustomersAsync();
+      
         //Método crear un nuevo cliente
-        int CreateCustomer(CustomerCreateDto customer);
+        Task<int> CreateCustomerAsync(CustomerCreateDto customer);
 
-        CustomersDto? GetCustomerById(int customerId);
+        Task<CustomersDto?> GetCustomerByIdAsync (int customerId);
 
-        void UpdateCustomer(int customerId, CustomerCreateDto customer);
+        Task UpdateCustomerAsync    (int customerId, CustomerCreateDto customer);
+
+        //Método para eliminar un cliente por su ID
+        //Task DeleteCustomerAsync (int customerId);
 
     } //end interface
 } //end namespace

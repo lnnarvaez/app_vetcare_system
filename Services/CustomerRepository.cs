@@ -21,12 +21,13 @@ namespace app_vetcare_system.Services
         /// Obtiene todos los clientes de la base de datos y los mapea a objetos CustomersDto
         /// </summary>
         /// <returns>Una lista de objetos CustomersDto</returns>
-        public IEnumerable<CustomersDto> GetAllCustomers()
+        public async Task <IReadOnlyList<CustomersDto>> GetAllCustomersAsync()
         {
             try
             {
                 return _context.Clientes
                 .AsNoTracking()
+                .Where(c => c.EstaActivo)
                 .Select(c => new CustomersDto
                 {
                     Id = c.ClienteId,
@@ -48,7 +49,7 @@ namespace app_vetcare_system.Services
             
         }
 
-        public int CreateCustomer(CustomerCreateDto customer)
+        public async Task<int> CreateCustomerAsync (CustomerCreateDto customer)
         {
             if (customer is null)
             {
@@ -74,7 +75,7 @@ namespace app_vetcare_system.Services
 
                 _context.Clientes.Add(entity);
 
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
                 return entity.ClienteId;
             }
@@ -93,7 +94,7 @@ namespace app_vetcare_system.Services
         /// <returns>Un objeto CustomersDto si se encuentra el cliente, de lo contrario null</returns>
         /// <exception cref="ArgumentOutOfRangeException"> El Id del cliente no es válido </exception>
         /// <exception cref="InvalidOperationException"> No fue posible consultar el cliente </exception>
-        public CustomersDto? GetCustomerById(int customerId)
+        public async Task<CustomersDto?> GetCustomerByIdAsync (int customerId)
         {
             if (customerId <= 0)
             {
@@ -102,7 +103,7 @@ namespace app_vetcare_system.Services
 
             try
             {
-                return _context.Clientes
+                return await _context.Clientes
                     .AsNoTracking()
                     .Where(cliente =>
                         cliente.ClienteId == customerId)
@@ -118,7 +119,7 @@ namespace app_vetcare_system.Services
                         Email = cliente.CorreoElectronico,
                         PreferredPaymentMethod = cliente.MetodoPagoPreferido
                     })
-                    .SingleOrDefault();
+                    .SingleOrDefaultAsync();
             }
             catch (Exception ex)
             {
@@ -135,7 +136,7 @@ namespace app_vetcare_system.Services
         /// <exception cref="ArgumentOutOfRangeException"> El Id del cliente no es válido </exception>
         /// <exception cref="ArgumentNullException"> Los datos del cliente son nulos </exception>
         /// <exception cref="InvalidOperationException"> No fue posible actualizar el cliente </exception>
-        public void UpdateCustomer(int customerId, CustomerCreateDto customer)
+        public async Task UpdateCustomerAsync (int customerId, CustomerCreateDto customer)
         {
             if (customerId <= 0)
             {
@@ -149,8 +150,8 @@ namespace app_vetcare_system.Services
 
             try
             {
-                var entity = _context.Clientes
-                    .SingleOrDefault(cliente =>
+                var entity = await _context.Clientes
+                    .SingleOrDefaultAsync(cliente =>
                         cliente.ClienteId == customerId);
 
                 if (entity is null)
@@ -171,7 +172,7 @@ namespace app_vetcare_system.Services
                     customer.PreferredPaymentMethod;
                 entity.FechaActualizacion = DateTime.Now;
 
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             catch (InvalidOperationException)
             {
