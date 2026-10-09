@@ -3,6 +3,7 @@ using app_vetcare_system.Services.Interfaz_service;
 using app_vetcare_system.Services.Repository;
 using app_vetcare_system.Services;
 using app_vetcare_system.Models.DTOs;
+using app_vetcare_system.Data.DbSqlite;
 using app_vetcare_system.View;
 using app_vetcare_system.View.FormUI;
 
@@ -18,6 +19,7 @@ namespace app_vetcare_system
         {
             InitializeComponent();
             _context = new VetCareDbSI2VContext();
+            SqliteSchemaInitializer.TryInitialize();
 
             _menuControls =
             [
