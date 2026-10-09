@@ -1,6 +1,8 @@
 using app_vetcare_si.Data;
 using app_vetcare_system.Services.Interfaz_service;
 using app_vetcare_system.Services.Repository;
+using app_vetcare_system.Services;
+using app_vetcare_system.Models.DTOs;
 using app_vetcare_system.View;
 using app_vetcare_system.View.FormUI;
 
@@ -9,11 +11,27 @@ namespace app_vetcare_system
     public partial class MainContainerForm : Form
     {
         private readonly VetCareDbSI2VContext _context;
+        private AuthenticationLoginForm? _authenticationForm;
+        private readonly Control[] _menuControls;
 
         public MainContainerForm()
         {
             InitializeComponent();
             _context = new VetCareDbSI2VContext();
+
+            _menuControls =
+            [
+                btnHome,
+                BtnClientes,
+                btnPatient,
+                btnService,
+                btnHospital,
+                btnReports,
+                btnAccount
+            ];
+
+            SetAuthenticatedState(false);
+            LoadAuthenticationForm();
         }
 
         private void btnClose_Click(object sender, EventArgs e)
@@ -21,6 +39,82 @@ namespace app_vetcare_system
             _context.Dispose();
 
             Dispose();
+        }
+
+        private void LoadAuthenticationForm()
+        {
+            var authenticationService = new AuthenticationService(
+                new UsuarioRepository(_context),
+                new PasswordHasher());
+
+            _authenticationForm =
+                new AuthenticationLoginForm(authenticationService);
+
+            _authenticationForm.AuthenticationSucceeded +=
+                AuthenticationForm_AuthenticationSucceeded;
+
+            _authenticationForm.TopLevel = false;
+            _authenticationForm.FormBorderStyle = FormBorderStyle.None;
+            _authenticationForm.Anchor = AnchorStyles.Top;
+            splitMain.Panel2.Controls.Add(_authenticationForm);
+
+            PositionAuthenticationForm();
+            splitMain.Panel2.Resize += SplitMainPanel2_Resize;
+            _authenticationForm.Show();
+        }
+
+        private void PositionAuthenticationForm()
+        {
+            if (_authenticationForm is null || _authenticationForm.IsDisposed)
+            {
+                return;
+            }
+
+            int availableHeight =
+                splitMain.Panel2.ClientSize.Height -
+                _authenticationForm.Height;
+
+            _authenticationForm.Left =
+                (splitMain.Panel2.ClientSize.Width -
+                 _authenticationForm.Width) / 2;
+
+            // Usa el 25 % del espacio vertical libre para mantener el login
+            // centrado horizontalmente y ligeramente por debajo del borde superior.
+            _authenticationForm.Top = Math.Max(0, (int)(availableHeight * 0.25));
+        }
+
+        private void SplitMainPanel2_Resize(object? sender, EventArgs e)
+        {
+            PositionAuthenticationForm();
+        }
+
+        private void AuthenticationForm_AuthenticationSucceeded(
+            object? sender,
+            EventArgs e)
+        {
+            if (_authenticationForm?.AuthenticatedUser is not AuthenticatedUserDto user)
+            {
+                return;
+            }
+
+            lblUserName.Text = user.UserName;
+            SetAuthenticatedState(true);
+
+            splitMain.Panel2.Resize -= SplitMainPanel2_Resize;
+            splitMain.Panel2.Controls.Remove(_authenticationForm);
+            _authenticationForm.Dispose();
+            _authenticationForm = null;
+        }
+
+        private void SetAuthenticatedState(bool isAuthenticated)
+        {
+            foreach (Control menuControl in _menuControls)
+            {
+                menuControl.Visible = isAuthenticated;
+                menuControl.Enabled = isAuthenticated;
+            }
+
+            panel2.Visible = isAuthenticated;
         }
 
         /// <summary>

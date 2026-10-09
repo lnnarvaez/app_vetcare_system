@@ -21,7 +21,7 @@ namespace app_vetcare_system.Presenter
                     nameof(authenticationService));
         }
 
-        public void Authenticate()
+        public async Task AuthenticateAsync()
         {
             try
             {
@@ -32,7 +32,7 @@ namespace app_vetcare_system.Presenter
                 };
 
                 AuthenticationResultDto result =
-                    _authenticationService.Authenticate(request);
+                    await _authenticationService.AuthenticateAsync(request);
 
                 if (!result.IsAuthenticated || result.User is null)
                 {

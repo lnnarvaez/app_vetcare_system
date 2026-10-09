@@ -15,7 +15,7 @@ namespace app_vetcare_system.Services.Repository
                 ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public UserAuthenticationDataDto? GetUserAuthenticationData(
+        public async Task<UserAuthenticationDataDto?> GetUserAuthenticationDataAsync(
             string userName)
         {
             if (string.IsNullOrWhiteSpace(userName))
@@ -27,7 +27,7 @@ namespace app_vetcare_system.Services.Repository
 
             try
             {
-                return _context.Usuarios
+                return await _context.Usuarios
                     .AsNoTracking()
                     .Where(usuario =>
                         usuario.NombreUsuario == userName &&
@@ -48,7 +48,7 @@ namespace app_vetcare_system.Services.Repository
                                 rolesUsuario.Rol.NombreRol)
                             .ToList()
                     })
-                    .SingleOrDefault();
+                    .SingleOrDefaultAsync();
             }
             catch (Exception ex)
             {
@@ -58,7 +58,7 @@ namespace app_vetcare_system.Services.Repository
             }
         }
 
-        public void UpdateLastLogin(int userId, DateTime lastLogin)
+        public async Task UpdateLastLoginAsync(int userId, DateTime lastLogin)
         {
             if (userId <= 0)
             {
@@ -67,8 +67,8 @@ namespace app_vetcare_system.Services.Repository
 
             try
             {
-                var user = _context.Usuarios
-                    .SingleOrDefault(usuario =>
+                var user = await _context.Usuarios
+                    .SingleOrDefaultAsync(usuario =>
                         usuario.UsuarioId == userId);
 
                 if (user is null)
@@ -78,7 +78,7 @@ namespace app_vetcare_system.Services.Repository
                 }
 
                 user.FechaUltimaSesion = lastLogin;
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             catch (InvalidOperationException)
             {
@@ -88,6 +88,51 @@ namespace app_vetcare_system.Services.Repository
             {
                 throw new InvalidOperationException(
                     "No fue posible actualizar la última sesión.",
+                    ex);
+            }
+        }
+
+        public async Task ResetPasswordAsync(string userName, string passwordHash)
+        {
+            if (string.IsNullOrWhiteSpace(userName))
+            {
+                throw new ArgumentException(
+                    "El nombre de usuario es obligatorio.",
+                    nameof(userName));
+            }
+
+            if (string.IsNullOrWhiteSpace(passwordHash))
+            {
+                throw new ArgumentException(
+                    "El hash de la contraseña es obligatorio.",
+                    nameof(passwordHash));
+            }
+
+            try
+            {
+                var user = await _context.Usuarios
+                    .SingleOrDefaultAsync(usuario =>
+                        usuario.NombreUsuario == userName &&
+                        usuario.EstaActivo);
+
+                if (user is null)
+                {
+                    throw new InvalidOperationException(
+                        "El usuario no existe o está inactivo.");
+                }
+
+                user.HashContrasena = passwordHash;
+                user.FechaActualizacion = DateTime.Now;
+                await _context.SaveChangesAsync();
+            }
+            catch (InvalidOperationException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException(
+                    "No fue posible actualizar la contraseña.",
                     ex);
             }
         }

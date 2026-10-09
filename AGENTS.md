@@ -2,29 +2,29 @@
 
 ## Proyecto
 
-- Es un único ejecutable .NET 8 Windows Forms (`app_vetcare_system.csproj`); `Program.cs` inicia `View/FormUI/MainContainerForm`.
-- La UI usa formularios, interfaces, presenters y servicios. `MainContainerForm` posee el `VetCareDbSI2VContext` compartido y carga formularios hijos en su panel derecho; conserva ese ciclo de vida al añadir módulos.
-- Los flujos de clientes usan `View/FormUI`, `Presenter`, `Services` y `Models/DTOs`; el acceso a datos debe permanecer en repositorios, no en formularios.
-- Los DTOs de autenticación están en `Models/DTOs`; sus contratos de vista están en `View/Interfaz/IAuthenticationView.cs`, el presenter en `Presenter/AuthenticationPresenter.cs` y la lógica en `Services/AuthenticationService.cs`.
-- La autenticación usa `UsuarioRepository` para consultar usuarios activos y `PasswordHasher` con PBKDF2-SHA256; el hash no debe exponerse en DTOs de salida ni en la vista.
-- El borrado de clientes es lógico: `CustomerDeletePresenter` usa `CustomerDeleteDto`, `ICustomerDeleteView` y `ICustomerRepository.DeleteCustomer`; el repositorio cambia `Cliente.EstaActivo` a `false` y actualiza `FechaActualizacion`, sin eliminar físicamente el registro.
-- `GetAllCustomers` y `GetCustomerById` filtran `Cliente.EstaActivo`; conserva ese filtro al añadir consultas de clientes para no mostrar registros desactivados.
-- Los repositorios se almacenan en `Services/Repository`; `CustomerRepository` y `UsuarioRepository` usan el namespace `app_vetcare_system.Services.Repository`.
-- Al consumir `CustomerRepository` desde una vista o formulario, importa `app_vetcare_system.Services.Repository`; el proyecto actualmente no compila si se usa solo `app_vetcare_system.Services`.
+- Es una única aplicación .NET 8 Windows Forms (`app_vetcare_system.csproj`); `Program.cs` inicia directamente `MainContainerForm`.
+- `MainContainerForm` crea y conserva un `VetCareDbSI2VContext` compartido, y carga los formularios hijos en `splitMain.Panel2`; respeta ese ciclo de vida al añadir módulos.
+- La arquitectura de clientes separa `View/FormUI`, `Presenter`, contratos en `View/Interfaz`, DTOs en `Models/DTOs` y acceso SQL en `Services/Repository`; los formularios no deben consultar la base directamente.
+- Todas las operaciones de `ICustomerRepository` son asíncronas: `GetAllCustomersAsync`, `CreateCustomerAsync`, `GetCustomerByIdAsync`, `UpdateCustomerAsync` y `DeleteCustomerAsync`; propaga `await` hasta los eventos de los formularios cuando corresponda.
+- El borrado de clientes es lógico: `CustomerRepository` pone `Cliente.EstaActivo` en `false` y actualiza `FechaActualizacion`; las consultas de clientes deben conservar el filtro `EstaActivo`.
+- Los repositorios usan el namespace `app_vetcare_system.Services.Repository`, no solo `app_vetcare_system.Services`.
+- La autenticación tiene presenter, servicio, repositorio y `PasswordHasher` PBKDF2-SHA256, pero no está conectada al arranque actual; `Program.cs` abre `MainContainerForm` sin pantalla de login.
 
-## Comandos
+## Comandos y validación
 
-- Ejecuta desde la raíz `dotnet restore` y `dotnet build app_vetcare_system.slnx`.
-- Ejecuta la aplicación con `dotnet run --project app_vetcare_system.csproj` en Windows con el SDK .NET 8 y soporte Windows Forms.
-- No hay proyecto de pruebas, lint, formatter ni CI; valida como mínimo con `dotnet build` y comprobaciones manuales cuando el cambio sea visual.
-
-## Flujo de OpenCode
-
-- `opencode.json` inicia con el agente `plan` y solicita aprobación antes de editar o ejecutar comandos; conserva este flujo de revisión salvo solicitud explícita.
+- Ejecuta desde la raíz: `dotnet restore`, después `dotnet build app_vetcare_system.slnx`.
+- Ejecuta la aplicación en Windows con .NET 8 mediante `dotnet run --project app_vetcare_system.csproj`; requiere SQL Server accesible para los módulos que consultan datos.
+- No hay proyecto de pruebas, lint, formatter, lockfile ni CI configurados; valida como mínimo con `dotnet build` y comprobación manual de cambios visuales.
 
 ## Base de datos y código generado
 
-- Al iniciar se construye `VetCareDbSI2VContext`, que lee `ConnectionStrings:VetCareDbConnectionSI` desde `appsettings.json`; los módulos actuales requieren una base SQL Server accesible.
-- Hay dos contextos EF: los clientes y la autenticación usan el generado `app_vetcare_si.Data.VetCareDbSI2VContext`; `Data/VetCareDbContext.cs` es independiente y corresponde al modelo inglés de clientes/empleados.
-- `Data/VetCareDbSI2VContext.cs` y `Models/Entities/*` son generados por EF Core Power Tools según `efpt.config.json` (`UseNullableReferences` está en `false`); no edites manualmente sus mappings, regenera desde la base configurada.
-- `appsettings.json` se copia al directorio de salida y contiene cadenas SQL dependientes de la máquina; no añadas credenciales ni secretos al repositorio y modifica la configuración local con cuidado.
+- `VetCareDbSI2VContext` lee `ConnectionStrings:VetCareDbConnectionSI` desde `appsettings.json`; ese archivo se copia al directorio de salida y contiene configuración dependiente de la máquina.
+- `Data/VetCareDbSI2VContext.cs` y `Models/Entities/*` son salidas de EF Core Power Tools descritas por `efpt.config.json`; no edites manualmente sus clases ni mappings, regénéralos desde la base configurada.
+- `Data/VetCareDbContext.cs` es un contexto EF independiente del contexto generado usado por clientes y autenticación.
+- No añadas credenciales ni secretos a `appsettings.json` ni al repositorio.
+
+## Formularios y OpenCode
+
+- No modifiques `*.Designer.cs`; los cambios de comportamiento deben ir en el archivo parcial no generado.
+- `opencode.json` usa `plan` como agente predeterminado y solicita aprobación para editar o ejecutar comandos; conserva ese flujo salvo instrucción explícita.
+- `.gitattributes` define `* text=auto`; conserva finales de línea consistentes con la normalización de Git al modificar archivos.

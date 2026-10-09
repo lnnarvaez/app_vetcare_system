@@ -21,7 +21,7 @@ namespace app_vetcare_system.Services
                     nameof(passwordHasher));
         }
 
-        public AuthenticationResultDto Authenticate(
+        public async Task<AuthenticationResultDto> AuthenticateAsync(
             AuthenticationRequestDto request)
         {
             if (request is null)
@@ -39,7 +39,7 @@ namespace app_vetcare_system.Services
             }
 
             UserAuthenticationDataDto? user =
-                _usuarioRepository.GetUserAuthenticationData(userName);
+                await _usuarioRepository.GetUserAuthenticationDataAsync(userName);
 
             if (user is null ||
                 !_passwordHasher.VerifyPassword(
@@ -50,7 +50,7 @@ namespace app_vetcare_system.Services
                     "El usuario o la contraseña no son válidos.");
             }
 
-            _usuarioRepository.UpdateLastLogin(
+            await _usuarioRepository.UpdateLastLoginAsync(
                 user.UserId,
                 DateTime.Now);
 
@@ -63,6 +63,28 @@ namespace app_vetcare_system.Services
                     EmployeeName = user.EmployeeName,
                     Roles = user.Roles
                 });
+        }
+
+        public async Task ResetPasswordAsync(string userName, string newPassword)
+        {
+            if (string.IsNullOrWhiteSpace(userName))
+            {
+                throw new ArgumentException(
+                    "El nombre de usuario es obligatorio.",
+                    nameof(userName));
+            }
+
+            if (string.IsNullOrEmpty(newPassword))
+            {
+                throw new ArgumentException(
+                    "La nueva contraseña es obligatoria.",
+                    nameof(newPassword));
+            }
+
+            string passwordHash = _passwordHasher.HashPassword(newPassword);
+            await _usuarioRepository.ResetPasswordAsync(
+                userName.Trim(),
+                passwordHash);
         }
     }
 }

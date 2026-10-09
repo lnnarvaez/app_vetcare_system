@@ -4,9 +4,11 @@ namespace app_vetcare_system.Services.Interfaz_service
 {
     public interface IUsuarioRepository
     {
-        UserAuthenticationDataDto? GetUserAuthenticationData(
+        Task<UserAuthenticationDataDto?> GetUserAuthenticationDataAsync(
             string userName);
 
-        void UpdateLastLogin(int userId, DateTime lastLogin);
+        Task UpdateLastLoginAsync(int userId, DateTime lastLogin);
+
+        Task ResetPasswordAsync(string userName, string passwordHash);
     }
 }
