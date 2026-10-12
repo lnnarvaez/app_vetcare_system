@@ -17,16 +17,16 @@
 - Ejecuta la aplicación en Windows con .NET 8 mediante `dotnet run --project app_vetcare_system.csproj`; requiere SQL Server accesible para los módulos que consultan datos.
 - No hay proyecto de pruebas, lint, formatter, lockfile ni CI configurados; valida como mínimo con `dotnet build` y comprobación manual de cambios visuales.
 
-## Base de datos y código generado
+## Datos y código generado
 
 - `VetCareDbSI2VContext` lee `ConnectionStrings:VetCareDbConnectionSI` desde `appsettings.json`; ese archivo se copia al directorio de salida y contiene configuración dependiente de la máquina.
 - `Data/VetCareDbSI2VContext.cs` y `Models/Entities/*` son salidas de EF Core Power Tools descritas por `efpt.config.json`; no edites manualmente sus clases ni mappings, regénéralos desde la base configurada.
 - `Data/VetCareDbContext.cs` es un contexto EF independiente del contexto generado usado por clientes y autenticación.
 - `Microsoft.EntityFrameworkCore.Sqlite` 8.0.30 está referenciado para preparar SQLite, pero `VetCareDbSI2VContext` continúa siendo exclusivamente SQL Server.
-- `Data/DbSqlite/SqliteSchemaInitializer.cs` crea de forma idempotente `Data/DbSqlite/VetCareLocal.db` desde `VetCareSqlite_Persistente.sql` al construir `MainContainerForm`; no elimina una base existente y captura sus fallos para no impedir el uso de SQL Server.
-- El script se copia al directorio de salida; la base generada se excluye mediante `.gitignore` (`Data/DbSqlite/*.db` y `*.db-*`).
-- SQLite aún no es fallback ni fuente de datos de clientes o autenticación: no agregues ORM SQLite, sincronización, colas operativas ni cambies `VetCareDbSI2VContext` hasta una solicitud explícita.
-- Si se implementa ORM SQLite después, usa un `VetCareSqliteContext` y entidades/configuraciones separadas; no reutilices ni edites las entidades o mappings generados para SQL Server sin una decisión explícita.
+- `Data/DbSqlite/SqliteSchemaInitializer.cs` crea de forma idempotente `Data/DbSqlite/VetCareLocal.db` en el directorio de salida desde `VetCareSqlite_Persistente.sql` al construir `MainContainerForm`; no elimina una base existente y captura sus fallos.
+- El script SQL se copia al directorio de salida; la base y sus archivos auxiliares están excluidos mediante `.gitignore` (`Data/DbSqlite/*.db` y `*.db-*`).
+- SQLite aún no es fallback ni fuente de datos de clientes o autenticación: no agregues ORM, sincronización ni colas operativas sin una solicitud explícita.
+- Si se implementa ORM SQLite después, usa un `VetCareSqliteContext` y entidades/configuraciones separadas; no reutilices ni edites entidades o mappings generados para SQL Server.
 - No añadas credenciales ni secretos a `appsettings.json` ni al repositorio.
 
 ## Formularios y OpenCode
