@@ -22,11 +22,13 @@
 - `VetCareDbSI2VContext` lee `ConnectionStrings:VetCareDbConnectionSI` desde `appsettings.json`; ese archivo se copia al directorio de salida y contiene configuración dependiente de la máquina.
 - `Data/VetCareDbSI2VContext.cs` y `Models/Entities/*` son salidas de EF Core Power Tools descritas por `efpt.config.json`; no edites manualmente sus clases ni mappings, regénéralos desde la base configurada.
 - `Data/VetCareDbContext.cs` es un contexto EF independiente del contexto generado usado por clientes y autenticación.
-- `Microsoft.EntityFrameworkCore.Sqlite` 8.0.30 está referenciado para preparar SQLite, pero `VetCareDbSI2VContext` continúa siendo exclusivamente SQL Server.
+- `Microsoft.EntityFrameworkCore.Sqlite` 8.0.30 está referenciado y `VetCareDbSI2VContext` continúa siendo exclusivamente SQL Server.
 - `Data/DbSqlite/SqliteSchemaInitializer.cs` crea de forma idempotente `Data/DbSqlite/VetCareLocal.db` en el directorio de salida desde `VetCareSqlite_Persistente.sql` al construir `MainContainerForm`; no elimina una base existente y captura sus fallos.
 - El script SQL se copia al directorio de salida; la base y sus archivos auxiliares están excluidos mediante `.gitignore` (`Data/DbSqlite/*.db` y `*.db-*`).
-- SQLite aún no es fallback ni fuente de datos de clientes o autenticación: no agregues ORM, sincronización ni colas operativas sin una solicitud explícita.
-- Si se implementa ORM SQLite después, usa un `VetCareSqliteContext` y entidades/configuraciones separadas; no reutilices ni edites entidades o mappings generados para SQL Server.
+- El ORM SQLite manual está separado en `Data/DbSqlite/VetCareSqliteContext.cs` y `Data/DbSqlite/Entities/*`; no lo mezcles con `VetCareDbSI2VContext` ni con `Models/Entities/*` de SQL Server.
+- `ConfiguracionSincronizacion.Valor` y `ActualizadaUtc` son `string` porque las columnas SQLite están definidas como `TEXT`; no los cambies a `decimal` o `DateTime` sin un convertidor explícito y una decisión de esquema.
+- El contexto y entidades SQLite aún no son fallback ni fuente de datos de clientes o autenticación; tampoco hay sincronización operativa implementada.
+- Si se conectan repositorios a SQLite después, conserva el contexto, entidades y mappings separados del modelo SQL Server y valida primero consultas aisladas contra `VetCareLocal.db`.
 - No añadas credenciales ni secretos a `appsettings.json` ni al repositorio.
 
 ## Formularios y OpenCode
