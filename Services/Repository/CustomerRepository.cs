@@ -1,19 +1,30 @@
+using System.Text.Json;
+using System.Diagnostics;
 using app_vetcare_si.Data;
 using app_vetcare_si.Models.Entities;
+using app_vetcare_system.Data.DbSqlite;
 using app_vetcare_system.Models.DTOs;
 using app_vetcare_system.Services.Interfaz_service;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Data.SqlClient;
+using SqliteCustomer = app_vetcare_system.Data.DbSqlite.Entities.Cliente;
+using SqliteOperation = app_vetcare_system.Data.DbSqlite.Entities.ColaOperacione;
+using SqliteKeyMapping = app_vetcare_system.Data.DbSqlite.Entities.MapeoClavesSincronizacion;
 
 namespace app_vetcare_system.Services.Repository
 {
     public class CustomerRepository : ICustomerRepository
     {
         private readonly VetCareDbSI2VContext _context;
+        private readonly VetCareSqliteContext? _sqliteContext;
 
-        public CustomerRepository(VetCareDbSI2VContext context)
+        public CustomerRepository(
+            VetCareDbSI2VContext context,
+            VetCareSqliteContext? sqliteContext = null)
         {
             _context = context
                 ?? throw new ArgumentNullException(nameof(context));
+            _sqliteContext = sqliteContext;
         }
 
         /// <summary>
@@ -84,6 +95,29 @@ namespace app_vetcare_system.Services.Repository
 
                 return entity.ClienteId;
             }
+            catch (Exception ex) when (IsConnectionFailure(ex))
+            {
+                Debug.WriteLine(
+                    $"SQL Server no está disponible; se intentará SQLite: {ex}");
+
+                // Evita conservar en el contexto SQL Server una entidad cuyo guardado falló.
+                foreach (var entry in _context.ChangeTracker.Entries<Cliente>().ToList())
+                {
+                    if (entry.State == EntityState.Added)
+                    {
+                        entry.State = EntityState.Detached;
+                    }
+                }
+
+                if (_sqliteContext is null)
+                {
+                    throw new InvalidOperationException(
+                        "Error al crear el cliente.",
+                        ex);
+                }
+
+                return await CreateCustomerLocallyAsync(customer, ex);
+            }
             catch (Exception ex)
             {
                 throw new InvalidOperationException(
@@ -91,6 +125,109 @@ namespace app_vetcare_system.Services.Repository
                     ex);
             } //End try-catch
         } //end CreateCustomer
+
+        private async Task<int> CreateCustomerLocallyAsync(
+            CustomerCreateDto customer,
+            Exception serverException)
+        {
+            try
+            {
+                await using var transaction =
+                    await _sqliteContext!.Database.BeginTransactionAsync();
+
+                var localCustomer = new SqliteCustomer
+                {
+                    Nombre = customer.FirstName,
+                    Apellido = customer.LastName,
+                    Cedula = customer.NationalId,
+                    TelefonoPrincipal = customer.MainPhone,
+                    TelefonoEmergencia = customer.EmergencyPhone,
+                    Direccion = customer.Address,
+                    CorreoElectronico = customer.Email,
+                    MetodoPagoPreferido = customer.PreferredPaymentMethod,
+                    EstaActivo = 1
+                };
+
+                _sqliteContext.Clientes.Add(localCustomer);
+                await _sqliteContext.SaveChangesAsync();
+
+                string operationId = Guid.NewGuid().ToString("N");
+                string localKey = localCustomer.ClienteId.ToString();
+                string payload = JsonSerializer.Serialize(customer);
+
+                var queuedOperation = new SqliteOperation
+                {
+                    OperacionId = operationId,
+                    ClaveIdempotencia = operationId,
+                    NombreEntidad = "Clientes",
+                    Accion = "INSERTAR",
+                    IdentificadorEntidad = localKey,
+                    PayloadJson = payload,
+                    Estado = "PENDIENTE",
+                    Intentos = 0
+                };
+
+                var keyMapping = new SqliteKeyMapping
+                {
+                    NombreEntidad = "Clientes",
+                    ClaveLocal = localKey,
+                    OperacionId = operationId,
+                    Estado = "PENDIENTE",
+                    Operacion = queuedOperation
+                };
+
+                queuedOperation.MapeoClavesSincronizacion = keyMapping;
+                _sqliteContext.ColaOperaciones.Add(queuedOperation);
+                await _sqliteContext.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                return localCustomer.ClienteId;
+            }
+            catch (Exception localException)
+            {
+                Debug.WriteLine(
+                    $"Fallback SQLite de clientes falló: {localException}");
+
+                throw new InvalidOperationException(
+                    "No fue posible guardar el cliente localmente después de perder la conexión con SQL Server.",
+                    new AggregateException(serverException, localException));
+            }
+        }
+
+        private static bool IsConnectionFailure(Exception exception)
+        {
+            for (Exception? current = exception;
+                 current is not null;
+                 current = current.InnerException)
+            {
+                if (current is TimeoutException)
+                {
+                    return true;
+                }
+
+                if (current is SqlException sqlException)
+                {
+                    if (sqlException.Errors.Cast<SqlError>().Any(error =>
+                            error.Number is 0 or -2 or 53 or 64 or 233 or
+                            10053 or 10054 or 10060 or 11001))
+                    {
+                        return true;
+                    }
+
+                    return sqlException.Message.Contains(
+                               "network-related",
+                               StringComparison.OrdinalIgnoreCase) ||
+                           sqlException.Message.Contains(
+                               "server-specific",
+                               StringComparison.OrdinalIgnoreCase) ||
+                           sqlException.Message.Contains(
+                               "error occurred while establishing a connection",
+                               StringComparison.OrdinalIgnoreCase);
+                }
+            }
+
+            return false;
+        }
 
         /// <summary>
         /// Obtiene un cliente por su Id y lo mapea a un objeto CustomersDto

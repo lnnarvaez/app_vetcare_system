@@ -6,12 +6,14 @@ using app_vetcare_system.Models.DTOs;
 using app_vetcare_system.Data.DbSqlite;
 using app_vetcare_system.View;
 using app_vetcare_system.View.FormUI;
+using Microsoft.EntityFrameworkCore;
 
 namespace app_vetcare_system
 {
     public partial class MainContainerForm : Form
     {
         private readonly VetCareDbSI2VContext _context;
+        private readonly VetCareSqliteContext _sqliteContext;
         private AuthenticationLoginForm? _authenticationForm;
         private readonly Control[] _menuControls;
 
@@ -20,6 +22,7 @@ namespace app_vetcare_system
             InitializeComponent();
             _context = new VetCareDbSI2VContext();
             SqliteSchemaInitializer.TryInitialize();
+            _sqliteContext = CreateSqliteContext();
 
             _menuControls =
             [
@@ -38,9 +41,25 @@ namespace app_vetcare_system
 
         private void btnClose_Click(object sender, EventArgs e)
         {
+            _sqliteContext.Dispose();
             _context.Dispose();
 
             Dispose();
+        }
+
+        private static VetCareSqliteContext CreateSqliteContext()
+        {
+            string databasePath = Path.Combine(
+                AppDomain.CurrentDomain.BaseDirectory,
+                "Data",
+                "DbSqlite",
+                "VetCareLocal.db");
+
+            var options = new DbContextOptionsBuilder<VetCareSqliteContext>()
+                .UseSqlite($"Data Source={databasePath}")
+                .Options;
+
+            return new VetCareSqliteContext(options);
         }
 
         private void LoadAuthenticationForm()
@@ -164,7 +183,7 @@ namespace app_vetcare_system
             try
             {
                 ICustomerRepository repository =
-                    new CustomerRepository(_context);
+                    new CustomerRepository(_context, _sqliteContext);
 
                 var customerListForm =
                     new ListCustomerForm(repository);
@@ -196,7 +215,8 @@ namespace app_vetcare_system
         {
             try
             {
-                ICustomerRepository repository = new CustomerRepository(_context);
+                ICustomerRepository repository =
+                    new CustomerRepository(_context, _sqliteContext);
                 var customerForm = new CustomerForm(repository);
                 LoadFormIntoPanel(customerForm);
             }
@@ -220,7 +240,7 @@ namespace app_vetcare_system
                 }
 
                 ICustomerRepository repository =
-                    new CustomerRepository(_context);
+                    new CustomerRepository(_context, _sqliteContext);
 
                 // Se abre CustomerEditForm, no CustomerForm.
                 var customerEditForm =

@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using app_vetcare_system.Models.DTOs;
 using app_vetcare_system.Services.Interfaz_service;
 using app_vetcare_system.View.Interfaz;
@@ -46,8 +47,9 @@ namespace app_vetcare_system.Presenter
 
                 _view.ClearCustomerForm();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Debug.WriteLine($"Creación de cliente falló: {ex}");
                 _view.ShowMessage("No fue posible registrar el cliente.");
             }
         }

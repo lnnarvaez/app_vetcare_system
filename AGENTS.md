@@ -27,8 +27,9 @@
 - El script SQL se copia al directorio de salida; la base y sus archivos auxiliares están excluidos mediante `.gitignore` (`Data/DbSqlite/*.db` y `*.db-*`).
 - El ORM SQLite manual está separado en `Data/DbSqlite/VetCareSqliteContext.cs` y `Data/DbSqlite/Entities/*`; no lo mezcles con `VetCareDbSI2VContext` ni con `Models/Entities/*` de SQL Server.
 - `ConfiguracionSincronizacion.Valor` y `ActualizadaUtc` son `string` porque las columnas SQLite están definidas como `TEXT`; no los cambies a `decimal` o `DateTime` sin un convertidor explícito y una decisión de esquema.
-- El contexto y entidades SQLite aún no son fallback ni fuente de datos de clientes o autenticación; tampoco hay sincronización operativa implementada.
-- Si se conectan repositorios a SQLite después, conserva el contexto, entidades y mappings separados del modelo SQL Server y valida primero consultas aisladas contra `VetCareLocal.db`.
+- El contexto y entidades SQLite no son fuente de datos general ni respaldo de autenticación; solo `CustomerRepository.CreateCustomerAsync` usa SQLite como fallback de inserción cuando detecta una falla de conexión con SQL Server.
+- Ese fallback guarda el cliente local, una operación `INSERTAR` pendiente en `ColaOperaciones` y su clave en `MapeoClavesSincronizacion`, todo dentro de una transacción asíncrona; la sincronización posterior aún no está implementada.
+- Si se amplía el fallback, conserva el contexto, entidades y mappings separados del modelo SQL Server y valida primero consultas aisladas contra `VetCareLocal.db`.
 - No añadas credenciales ni secretos a `appsettings.json` ni al repositorio.
 
 ## Formularios y OpenCode
