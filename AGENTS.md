@@ -28,8 +28,11 @@
 - El ORM SQLite manual está separado en `Data/DbSqlite/VetCareSqliteContext.cs` y `Data/DbSqlite/Entities/*`; no lo mezcles con `VetCareDbSI2VContext` ni con `Models/Entities/*` de SQL Server.
 - `ConfiguracionSincronizacion.Valor` y `ActualizadaUtc` son `string` porque las columnas SQLite están definidas como `TEXT`; no los cambies a `decimal` o `DateTime` sin un convertidor explícito y una decisión de esquema.
 - El contexto y entidades SQLite no son fuente de datos general ni respaldo de autenticación; solo `CustomerRepository.CreateCustomerAsync` usa SQLite como fallback de inserción cuando detecta una falla de conexión con SQL Server.
-- Ese fallback guarda el cliente local, una operación `INSERTAR` pendiente en `ColaOperaciones` y su clave en `MapeoClavesSincronizacion`, todo dentro de una transacción asíncrona; la sincronización posterior aún no está implementada.
-- Si se amplía el fallback, conserva el contexto, entidades y mappings separados del modelo SQL Server y valida primero consultas aisladas contra `VetCareLocal.db`.
+- Ese fallback guarda el cliente local, una operación `INSERTAR` pendiente en `ColaOperaciones` y su clave en `MapeoClavesSincronizacion`, todo dentro de una transacción asíncrona.
+- `CustomerSynchronizationService` sincroniza únicamente operaciones `Clientes/INSERTAR`; crea contextos SQL Server y SQLite independientes por ciclo, evita ejecuciones simultáneas y actualiza la cola/mapeo con estados `EN_PROCESO`, `REINTENTAR`, `CONFIRMADA` o `ERROR_PERMANENTE`.
+- La sincronización se inicia después de autenticar y se reintenta cada 60 segundos; no procesa todavía actualizaciones, eliminaciones ni autenticación.
+- La sincronización consulta SQL Server por la cédula antes de insertar para reducir duplicados; si la aplicación falla entre el alta remota y la confirmación local, esa verificación permite completar el mapeo en el siguiente intento.
+- Si se amplía el fallback o sincronizador, conserva el contexto, entidades y mappings separados del modelo SQL Server y valida primero consultas aisladas contra `VetCareLocal.db`.
 - No añadas credenciales ni secretos a `appsettings.json` ni al repositorio.
 
 ## Formularios y OpenCode

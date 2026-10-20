@@ -14,6 +14,9 @@ namespace app_vetcare_system
     {
         private readonly VetCareDbSI2VContext _context;
         private readonly VetCareSqliteContext _sqliteContext;
+        private readonly CustomerSynchronizationService _synchronizationService;
+        private readonly System.Windows.Forms.Timer _synchronizationTimer;
+        private CancellationTokenSource? _synchronizationCancellation;
         private AuthenticationLoginForm? _authenticationForm;
         private readonly Control[] _menuControls;
 
@@ -23,6 +26,14 @@ namespace app_vetcare_system
             _context = new VetCareDbSI2VContext();
             SqliteSchemaInitializer.TryInitialize();
             _sqliteContext = CreateSqliteContext();
+            _synchronizationService = new CustomerSynchronizationService();
+            _synchronizationTimer = new System.Windows.Forms.Timer
+            {
+                Interval = 60_000
+            };
+            _synchronizationTimer.Tick += SynchronizationTimer_Tick;
+            btnReports.Click += btnReports_Click;
+            btnHome.Click += btnHome_Click;
 
             _menuControls =
             [
@@ -41,6 +52,7 @@ namespace app_vetcare_system
 
         private void btnClose_Click(object sender, EventArgs e)
         {
+            StopSynchronization();
             _sqliteContext.Dispose();
             _context.Dispose();
 
@@ -125,6 +137,74 @@ namespace app_vetcare_system
             splitMain.Panel2.Controls.Remove(_authenticationForm);
             _authenticationForm.Dispose();
             _authenticationForm = null;
+
+            ShowDashboardIfNeeded();
+            StartSynchronization();
+        }
+
+        private void btnReports_Click(object? sender, EventArgs e)
+        {
+            ShowDashboardIfNeeded();
+        }
+
+        private void btnHome_Click(object? sender, EventArgs e)
+        {
+            ShowDashboardIfNeeded();
+        }
+
+        private void ShowDashboardIfNeeded()
+        {
+            if (splitMain.Panel2.Controls.OfType<VisualiceDataForm>().Any())
+            {
+                return;
+            }
+
+            try
+            {
+                var dashboardForm = new VisualiceDataForm(
+                    new DashboardRepository(_context));
+
+                LoadFormIntoPanel(dashboardForm);
+            }
+            catch (Exception)
+            {
+                MessageBox.Show(
+                    "No fue posible abrir el dashboard.",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+        }
+
+        private void StartSynchronization()
+        {
+            _synchronizationCancellation = new CancellationTokenSource();
+            _synchronizationTimer.Start();
+            _ = SynchronizeCustomersAsync(_synchronizationCancellation.Token);
+        }
+
+        private void StopSynchronization()
+        {
+            _synchronizationTimer.Stop();
+            _synchronizationCancellation?.Cancel();
+            _synchronizationCancellation?.Dispose();
+            _synchronizationCancellation = null;
+        }
+
+        private void SynchronizationTimer_Tick(object? sender, EventArgs e)
+        {
+            if (_synchronizationCancellation is not null)
+            {
+                _ = SynchronizeCustomersAsync(
+                    _synchronizationCancellation.Token);
+            }
+        }
+
+        private async Task SynchronizeCustomersAsync(
+            CancellationToken cancellationToken)
+        {
+            await _synchronizationService
+                .SynchronizePendingCustomersAsync(cancellationToken);
         }
 
         private void SetAuthenticatedState(bool isAuthenticated)
