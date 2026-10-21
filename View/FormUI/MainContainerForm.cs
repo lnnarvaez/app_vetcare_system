@@ -20,6 +20,7 @@ namespace app_vetcare_system
         {
             InitializeComponent();
             _context = new VetCareDbSI2VContext();
+            btnHome.Click += BtnHome_Click;
 
             SetNavigationAccess(false);
             ShowAuthenticationForm();
@@ -161,6 +162,20 @@ namespace app_vetcare_system
             _authenticationLoginForm = null;
             RemoveCurrentChildForm();
             SetNavigationAccess(true);
+            ShowDashboardForm();
+        }
+
+        private void ShowDashboardForm()
+        {
+            if (!HasNavigationAccess())
+            {
+                return;
+            }
+
+            var dashboardRepository = new DashboardRepository(_context);
+            var dashboardForm = new VisualizeDataForm(dashboardRepository);
+
+            LoadFormIntoPanel(dashboardForm);
         }
 
         private void RemoveCurrentChildForm()
@@ -239,6 +254,11 @@ namespace app_vetcare_system
                     MessageBoxIcon.Error);
             }
 
+        }
+
+        private void BtnHome_Click(object? sender, EventArgs e)
+        {
+            ShowDashboardForm();
         }
 
         /// <summary>

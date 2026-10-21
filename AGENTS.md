@@ -10,12 +10,14 @@
 
 - `MainContainerForm` mantiene el `VetCareDbSI2VContext` compartido y carga formularios hijos en `splitMain.Panel2`; no cambies ese ciclo de vida al añadir módulos.
 - La autenticación se muestra dentro de `MainContainerForm`, no desde `Program.cs`: `AuthenticationLoginForm` usa `IAuthenticationView`, `AuthenticationPresenter`, `AuthenticationService`, `UsuarioRepository` y `PasswordHasher`.
+- `AuthenticationLoginForm.btnRecovery` abre `RecoverAccessForm` como modal centrado; el usuario se precarga y el restablecimiento usa `AuthenticationService.ResetPassword`, `PasswordHasher` y `UsuarioRepository.UpdatePassword`.
 - La navegación permanece oculta hasta autenticarse; el acceso actual exige que los roles reales devueltos por la base incluyan `Administrador`, sin asignarlo automáticamente. No elimines la validación previa de acceso.
 - `LoadFormIntoPanel` usa `DockStyle.Fill` para módulos normales; el login tiene una carga específica que conserva su tamaño del diseñador y lo centra. No generalices ese comportamiento al resto de formularios.
 
 ## Arquitectura de clientes
 
 - Mantén el acceso a datos en `Services/Repository`, no en formularios; los repositorios usan el namespace `app_vetcare_system.Services.Repository`.
+- Las operaciones de autenticación y recuperación permanecen en `AuthenticationService`; los formularios no deben acceder directamente a EF ni guardar contraseñas en texto plano.
 - Crear y editar clientes usan sus presenters actuales. La eliminación lógica se dispara desde `CustomerEditForm.btnDelete_Click`, pasa por `CustomerDeletePresenter` y `CustomerDeleteDto`, y termina en `CustomerRepository.DeleteCustomer`, que establece `EstaActivo = false`.
 - Al editar o eliminar, conserva el `customerId` recibido por `CustomerEditForm`; no lo derives de campos editables del formulario.
 
