@@ -11,5 +11,9 @@ namespace app_vetcare_system.Models.DTOs
         public int AppointmentsFromFirstToFifteenth { get; set; }
 
         public int MonthlyAppointments { get; set; }
+
+        public IReadOnlyCollection<DashboardAppointmentStatusDto>
+            AppointmentsByStatus { get; set; } =
+                Array.Empty<DashboardAppointmentStatusDto>();
     }
 }

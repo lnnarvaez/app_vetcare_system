@@ -52,6 +52,20 @@ namespace app_vetcare_system.Services.Repository
                 cita.FechaHoraInicioProgramada >= monthStart &&
                 cita.FechaHoraInicioProgramada < nextMonthStart);
 
+            List<DashboardAppointmentStatusDto> appointmentsByStatus =
+                _context.Citas
+                    .Where(cita =>
+                        cita.FechaHoraInicioProgramada >= monthStart &&
+                        cita.FechaHoraInicioProgramada < nextMonthStart)
+                    .GroupBy(cita => cita.EstadoCita.NombreEstado)
+                    .Select(group => new DashboardAppointmentStatusDto
+                    {
+                        StatusName = group.Key ?? "Sin estado",
+                        Total = group.Count()
+                    })
+                    .OrderBy(item => item.StatusName)
+                    .ToList();
+
             return new DashboardSummaryDto
             {
                 TotalNewCustomers = totalNewCustomers,
@@ -59,7 +73,8 @@ namespace app_vetcare_system.Services.Repository
                 WeeklyAppointments = weeklyAppointments,
                 AppointmentsFromFirstToFifteenth =
                     appointmentsFromFirstToFifteenth,
-                MonthlyAppointments = monthlyAppointments
+                MonthlyAppointments = monthlyAppointments,
+                AppointmentsByStatus = appointmentsByStatus
             };
         }
     }

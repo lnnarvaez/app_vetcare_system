@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            panel1 = new Panel();
+            pnlTitle = new Panel();
             pnlCustomer = new Panel();
             lblTotalCustomers = new Label();
             label1 = new Label();
@@ -44,48 +44,52 @@
             label3 = new Label();
             label2 = new Label();
             panel5 = new Panel();
-            panel2 = new Panel();
+            pnlGraphics = new Panel();
+            pnlBars = new Panel();
+            frmBarsAppointmentStatus = new ScottPlot.WinForms.FormsPlot();
             panel3 = new Panel();
             pnlCustomer.SuspendLayout();
             pnlPacients.SuspendLayout();
             pnlMonthlyPerformance.SuspendLayout();
+            pnlGraphics.SuspendLayout();
+            pnlBars.SuspendLayout();
             SuspendLayout();
             // 
-            // panel1
+            // pnlTitle
             // 
-            panel1.BackColor = Color.FromArgb(158, 158, 158);
-            panel1.Dock = DockStyle.Top;
-            panel1.Location = new Point(0, 0);
-            panel1.Name = "panel1";
-            panel1.Size = new Size(1199, 60);
-            panel1.TabIndex = 0;
+            pnlTitle.BackColor = Color.FromArgb(158, 158, 158);
+            pnlTitle.Dock = DockStyle.Top;
+            pnlTitle.Location = new Point(0, 0);
+            pnlTitle.Name = "pnlTitle";
+            pnlTitle.Size = new Size(1501, 60);
+            pnlTitle.TabIndex = 0;
             // 
             // pnlCustomer
             // 
-            pnlCustomer.BackColor = Color.Gainsboro;
+            pnlCustomer.BackColor = Color.FromArgb(30, 82, 155);
             pnlCustomer.Controls.Add(lblTotalCustomers);
             pnlCustomer.Controls.Add(label1);
             pnlCustomer.Location = new Point(76, 110);
             pnlCustomer.Name = "pnlCustomer";
-            pnlCustomer.Size = new Size(210, 90);
+            pnlCustomer.Size = new Size(253, 106);
             pnlCustomer.TabIndex = 1;
             // 
             // lblTotalCustomers
             // 
             lblTotalCustomers.AutoSize = true;
-            lblTotalCustomers.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblTotalCustomers.ForeColor = Color.FromArgb(30, 82, 155);
-            lblTotalCustomers.Location = new Point(62, 16);
+            lblTotalCustomers.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblTotalCustomers.ForeColor = Color.FromArgb(240, 241, 242);
+            lblTotalCustomers.Location = new Point(76, 28);
             lblTotalCustomers.Name = "lblTotalCustomers";
-            lblTotalCustomers.Size = new Size(74, 28);
+            lblTotalCustomers.Size = new Size(88, 32);
             lblTotalCustomers.TabIndex = 1;
             lblTotalCustomers.Text = "[####]";
-            lblTotalCustomers.Click += label2_Click;
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(39, 54);
+            label1.ForeColor = Color.WhiteSmoke;
+            label1.Location = new Point(52, 69);
             label1.Name = "label1";
             label1.Size = new Size(138, 25);
             label1.TabIndex = 0;
@@ -93,18 +97,19 @@
             // 
             // pnlPacients
             // 
-            pnlPacients.BackColor = Color.Gainsboro;
+            pnlPacients.BackColor = Color.FromArgb(30, 82, 155);
             pnlPacients.Controls.Add(label4);
             pnlPacients.Controls.Add(lblTotalPacients);
-            pnlPacients.Location = new Point(337, 110);
+            pnlPacients.Location = new Point(382, 110);
             pnlPacients.Name = "pnlPacients";
-            pnlPacients.Size = new Size(210, 90);
+            pnlPacients.Size = new Size(253, 106);
             pnlPacients.TabIndex = 2;
             // 
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(35, 53);
+            label4.ForeColor = Color.WhiteSmoke;
+            label4.Location = new Point(53, 69);
             label4.Name = "label4";
             label4.Size = new Size(149, 25);
             label4.TabIndex = 1;
@@ -113,17 +118,17 @@
             // lblTotalPacients
             // 
             lblTotalPacients.AutoSize = true;
-            lblTotalPacients.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblTotalPacients.ForeColor = Color.FromArgb(30, 82, 155);
-            lblTotalPacients.Location = new Point(65, 16);
+            lblTotalPacients.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblTotalPacients.ForeColor = Color.FromArgb(240, 241, 242);
+            lblTotalPacients.Location = new Point(85, 28);
             lblTotalPacients.Name = "lblTotalPacients";
-            lblTotalPacients.Size = new Size(74, 28);
+            lblTotalPacients.Size = new Size(88, 32);
             lblTotalPacients.TabIndex = 0;
             lblTotalPacients.Text = "[####]";
             // 
             // pnlMonthlyPerformance
             // 
-            pnlMonthlyPerformance.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            pnlMonthlyPerformance.BorderStyle = BorderStyle.FixedSingle;
             pnlMonthlyPerformance.Controls.Add(lblMonthlyAppointments);
             pnlMonthlyPerformance.Controls.Add(lblMedicalappointment15);
             pnlMonthlyPerformance.Controls.Add(lblWeeklyAppointment);
@@ -133,7 +138,7 @@
             pnlMonthlyPerformance.Controls.Add(label2);
             pnlMonthlyPerformance.Location = new Point(76, 266);
             pnlMonthlyPerformance.Name = "pnlMonthlyPerformance";
-            pnlMonthlyPerformance.Size = new Size(500, 200);
+            pnlMonthlyPerformance.Size = new Size(634, 260);
             pnlMonthlyPerformance.TabIndex = 3;
             // 
             // lblMonthlyAppointments
@@ -141,7 +146,7 @@
             lblMonthlyAppointments.AutoSize = true;
             lblMonthlyAppointments.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             lblMonthlyAppointments.ForeColor = SystemColors.ControlDarkDark;
-            lblMonthlyAppointments.Location = new Point(423, 153);
+            lblMonthlyAppointments.Location = new Point(554, 189);
             lblMonthlyAppointments.Name = "lblMonthlyAppointments";
             lblMonthlyAppointments.Size = new Size(28, 32);
             lblMonthlyAppointments.TabIndex = 6;
@@ -152,7 +157,7 @@
             lblMedicalappointment15.AutoSize = true;
             lblMedicalappointment15.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             lblMedicalappointment15.ForeColor = SystemColors.ControlDarkDark;
-            lblMedicalappointment15.Location = new Point(423, 114);
+            lblMedicalappointment15.Location = new Point(554, 137);
             lblMedicalappointment15.Name = "lblMedicalappointment15";
             lblMedicalappointment15.Size = new Size(28, 32);
             lblMedicalappointment15.TabIndex = 5;
@@ -163,7 +168,7 @@
             lblWeeklyAppointment.AutoSize = true;
             lblWeeklyAppointment.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             lblWeeklyAppointment.ForeColor = SystemColors.ControlDarkDark;
-            lblWeeklyAppointment.Location = new Point(423, 71);
+            lblWeeklyAppointment.Location = new Point(554, 88);
             lblWeeklyAppointment.Name = "lblWeeklyAppointment";
             lblWeeklyAppointment.Size = new Size(28, 32);
             lblWeeklyAppointment.TabIndex = 4;
@@ -172,7 +177,7 @@
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new Point(23, 71);
+            label6.Location = new Point(39, 94);
             label6.Name = "label6";
             label6.Size = new Size(372, 25);
             label6.TabIndex = 3;
@@ -181,7 +186,7 @@
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new Point(23, 114);
+            label5.Location = new Point(39, 144);
             label5.Name = "label5";
             label5.Size = new Size(246, 25);
             label5.TabIndex = 2;
@@ -190,7 +195,7 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(23, 153);
+            label3.Location = new Point(39, 196);
             label3.Name = "label3";
             label3.Size = new Size(239, 25);
             label3.TabIndex = 1;
@@ -201,7 +206,7 @@
             label2.AutoSize = true;
             label2.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label2.ForeColor = Color.FromArgb(32, 82, 155);
-            label2.Location = new Point(23, 21);
+            label2.Location = new Point(181, 21);
             label2.Name = "label2";
             label2.Size = new Size(264, 32);
             label2.TabIndex = 0;
@@ -209,26 +214,46 @@
             // 
             // panel5
             // 
-            panel5.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            panel5.Location = new Point(626, 266);
+            panel5.BorderStyle = BorderStyle.FixedSingle;
+            panel5.Location = new Point(791, 266);
             panel5.Name = "panel5";
-            panel5.Size = new Size(500, 200);
+            panel5.Size = new Size(634, 260);
             panel5.TabIndex = 4;
             // 
-            // panel2
+            // pnlGraphics
             // 
-            panel2.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            panel2.Location = new Point(76, 519);
-            panel2.Name = "panel2";
-            panel2.Size = new Size(500, 200);
-            panel2.TabIndex = 5;
+            pnlGraphics.BorderStyle = BorderStyle.FixedSingle;
+            pnlGraphics.Controls.Add(pnlBars);
+            pnlGraphics.Location = new Point(76, 589);
+            pnlGraphics.Name = "pnlGraphics";
+            pnlGraphics.Padding = new Padding(8);
+            pnlGraphics.Size = new Size(634, 385);
+            pnlGraphics.TabIndex = 5;
+            // 
+            // pnlBars
+            // 
+            pnlBars.Controls.Add(frmBarsAppointmentStatus);
+            pnlBars.Cursor = Cursors.Hand;
+            pnlBars.Location = new Point(11, 11);
+            pnlBars.Name = "pnlBars";
+            pnlBars.Padding = new Padding(4);
+            pnlBars.Size = new Size(610, 359);
+            pnlBars.TabIndex = 0;
+            // 
+            // frmBarsAppointmentStatus
+            // 
+            frmBarsAppointmentStatus.Dock = DockStyle.Fill;
+            frmBarsAppointmentStatus.Location = new Point(4, 4);
+            frmBarsAppointmentStatus.Name = "frmBarsAppointmentStatus";
+            frmBarsAppointmentStatus.Size = new Size(602, 351);
+            frmBarsAppointmentStatus.TabIndex = 0;
             // 
             // panel3
             // 
-            panel3.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            panel3.Location = new Point(626, 519);
+            panel3.BorderStyle = BorderStyle.FixedSingle;
+            panel3.Location = new Point(791, 589);
             panel3.Name = "panel3";
-            panel3.Size = new Size(500, 200);
+            panel3.Size = new Size(634, 385);
             panel3.TabIndex = 6;
             // 
             // VisualizeDataForm
@@ -236,14 +261,14 @@
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.WhiteSmoke;
-            ClientSize = new Size(1199, 801);
+            ClientSize = new Size(1501, 1083);
             Controls.Add(panel3);
-            Controls.Add(panel2);
+            Controls.Add(pnlGraphics);
             Controls.Add(panel5);
             Controls.Add(pnlMonthlyPerformance);
             Controls.Add(pnlPacients);
             Controls.Add(pnlCustomer);
-            Controls.Add(panel1);
+            Controls.Add(pnlTitle);
             FormBorderStyle = FormBorderStyle.None;
             Name = "VisualizeDataForm";
             Text = "VisualizeDataForm";
@@ -253,12 +278,14 @@
             pnlPacients.PerformLayout();
             pnlMonthlyPerformance.ResumeLayout(false);
             pnlMonthlyPerformance.PerformLayout();
+            pnlGraphics.ResumeLayout(false);
+            pnlBars.ResumeLayout(false);
             ResumeLayout(false);
         }
 
         #endregion
 
-        private Panel panel1;
+        private Panel pnlTitle;
         private Panel pnlCustomer;
         private Label lblTotalCustomers;
         private Label label1;
@@ -267,7 +294,7 @@
         private Label lblTotalPacients;
         private Panel pnlMonthlyPerformance;
         private Panel panel5;
-        private Panel panel2;
+        private Panel pnlGraphics;
         private Panel panel3;
         private Label label2;
         private Label label6;
@@ -276,5 +303,7 @@
         private Label lblMonthlyAppointments;
         private Label lblMedicalappointment15;
         private Label lblWeeklyAppointment;
+        private Panel pnlBars;
+        private ScottPlot.WinForms.FormsPlot frmBarsAppointmentStatus;
     }
 }

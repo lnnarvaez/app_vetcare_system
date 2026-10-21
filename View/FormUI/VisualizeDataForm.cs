@@ -2,6 +2,7 @@
 using app_vetcare_system.Presenter;
 using app_vetcare_system.Services.Interfaz_service;
 using app_vetcare_system.View.Interfaz;
+using ScottPlot;
 
 namespace app_vetcare_system.View.FormUI
 {
@@ -35,6 +36,8 @@ namespace app_vetcare_system.View.FormUI
                 summary.AppointmentsFromFirstToFifteenth.ToString();
             lblMonthlyAppointments.Text =
                 summary.MonthlyAppointments.ToString();
+
+            RenderAppointmentsByStatus(summary.AppointmentsByStatus);
         }
 
         public void ShowErrorMessage(string message)
@@ -44,6 +47,8 @@ namespace app_vetcare_system.View.FormUI
             lblWeeklyAppointment.Text = "0";
             lblMedicalappointment15.Text = "0";
             lblMonthlyAppointments.Text = "0";
+            RenderAppointmentsByStatus(
+                Array.Empty<DashboardAppointmentStatusDto>());
 
             MessageBox.Show(
                 this,
@@ -53,9 +58,44 @@ namespace app_vetcare_system.View.FormUI
                 MessageBoxIcon.Warning);
         }
 
-        private void label2_Click(object? sender, EventArgs e)
+        private void RenderAppointmentsByStatus(
+            IReadOnlyCollection<DashboardAppointmentStatusDto> appointments)
         {
-            // El indicador es informativo; no requiere una acción al hacer clic.
+            // El control gráfico ya pertenece al diseñador; aquí solo se actualizan sus datos.
+            frmBarsAppointmentStatus.Plot.Clear();
+
+            if (appointments.Count == 0)
+            {
+                frmBarsAppointmentStatus.Refresh();
+                return;
+            }
+
+            double[] values = appointments
+                .Select(appointment => (double)appointment.Total)
+                .ToArray();
+            string[] labels = appointments
+                .Select(appointment => appointment.StatusName)
+                .ToArray();
+
+            var bars = frmBarsAppointmentStatus.Plot.Add.Bars(values);
+            bars.Color = Colors.SteelBlue;
+
+            var tickGenerator =
+                new ScottPlot.TickGenerators.NumericManual();
+
+            for (int index = 0; index < labels.Length; index++)
+            {
+                tickGenerator.AddMajor(index, labels[index]);
+            }
+
+            frmBarsAppointmentStatus.Plot.Axes.Bottom.TickGenerator =
+                tickGenerator;
+            frmBarsAppointmentStatus.Plot.Axes.Margins(bottom: 0);
+            frmBarsAppointmentStatus.Plot.Axes.SetLimitsY(
+                0,
+                Math.Max(1, values.Max() * 1.1));
+            frmBarsAppointmentStatus.Plot.Title("Citas por estado");
+            frmBarsAppointmentStatus.Refresh();
         }
     }
 }
